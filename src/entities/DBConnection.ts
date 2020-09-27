@@ -1,6 +1,4 @@
-import 'colors';
 import * as Koa from 'koa';
-import { DefaultState, DefaultContext, ParameterizedContext } from 'koa';
 import { createConnection } from 'typeorm';
 import { config } from 'dotenv';
 import 'reflect-metadata';

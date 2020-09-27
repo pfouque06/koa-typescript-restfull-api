@@ -1,6 +1,6 @@
 import { Repository, ObjectLiteral, DeepPartial } from "typeorm"
 
-export class BaseService<T> {
+export class BaseRepository<T> {
     public readonly repo: Repository<T>;
     
     constructor(repo: Repository<T>) {

@@ -1,23 +1,20 @@
 import 'colors';
 import { config} from 'dotenv';
 import * as Koa from 'koa';
-import { DefaultState, DefaultContext, ParameterizedContext} from 'koa';
 import * as Router from 'koa-router';
 import { createKoaServer, useContainer } from 'routing-controllers';
 import { Container } from 'typedi';
 import { UserController } from './controllers/UserController';
 import { DBconnection } from './entities/DBConnection';
-import { Post } from './entities/Post';
-import { User } from './entities/User';
 import { UserService } from './services/UserService';
 
 // load .env data
 config(); const {server_port} = process.env;
 // console.log(server_port);
 
-//test 
-const toto: User = new User();
-const postA: Post = new Post();
+// test 
+// const toto: User = new User();
+// const postA: Post = new Post();
 
 const startApp = async () => {
     

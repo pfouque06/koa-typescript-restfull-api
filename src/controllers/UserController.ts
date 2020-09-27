@@ -10,9 +10,6 @@ import {
 import { DeepPartial } from "typeorm";
 import { User } from "../entities/User";
 import { UserService } from "../services/UserService";
-import { hash, genSalt } from "bcrypt";
-import { validate, ValidationError } from "class-validator";
-import * as moment from "moment";
 
 // @Controller()
 @JsonController("/users") // to ensure server deals only with json body types and uri starts with /users
@@ -36,35 +33,12 @@ export class UserController {
     @Post()
     async post(@Body() user: DeepPartial<User>) {
         console.log(`POST /users`.bgCyan);
-        console.log(`Body: `, user);
-        
-        // create new User instance
-        const instance: DeepPartial<User> = this.userService.getInstance(user);
-        
-        // validattion steps
-        const validationResult: Array<ValidationError> = await validate(instance);
-        if (validationResult.length > 0) throw validationResult;
-
-        // reset birthDate since date format issue between mysql and validation constraint type for now
-        if (user.birthDate) { instance.birthDate = null}
-
-        // generate salt & hash password with salt
-        instance.salt = await genSalt();
-        instance.password = await hash(user.password || "", instance.salt);
-        console.log(`Instance: `, instance);
-        return this.userService.create(user, instance);
+        return this.userService.create(user);
     }
     
     @Put("/:id")
     async put(@Param("id") id: number, @Body({ validate: true }) user: DeepPartial<User>) {
         console.log(`PUT /users/${id}`.bgCyan);
-        // handle password change request if any
-        if (user.password) {
-            // generate salt & hash password with salt
-            user.salt = await genSalt();
-            user.password = await hash(user.password || "", user.salt);
-        }
-        console.log(`Body: `, user);
         return this.userService.update(id, user);
     }
     
