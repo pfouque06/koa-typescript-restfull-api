@@ -1,21 +1,13 @@
 import 'colors';
-import { Service } from "typedi";
 import { ObjectLiteral } from 'typeorm';
-import { BaseRepository } from '../repositories/BaseRepository';
 
-@Service()
-export class BaseService<T> {
+export abstract class BaseService<T> {
 
     // public repository: BaseRepository<T>;
 
-    async isUnique(where: ObjectLiteral): Promise<boolean> {
-        return true;
-        // if (where) {
-            // return await this.repository.getById(id, { where });
-        // } else {
-        //     return await this.repository.getById(id);
-        // }
-    }
+    async abstract getById(id: number, where?: ObjectLiteral): Promise<T>;
+
+    async abstract isUnique(password: string): Promise<boolean>;
 
     async checkService(): Promise<boolean> {
         return true;

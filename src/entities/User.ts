@@ -4,6 +4,7 @@ import { BaseEntity } from './BaseEntity';
 import { Exclude } from 'class-transformer';
 import { IsDefined, IsEmail, IsEmpty, IsOptional, IsPhoneNumber, IsString, Length } from 'class-validator';
 import { CREATE, IsDateStringCustom, IsUniqueCustom, UPDATE } from './customValidators';
+import { UserService } from '../services/UserService';
 
 export type UserProfile = 'admin' | 'user'
 
@@ -36,9 +37,9 @@ export class User extends BaseEntity {
     birthDate: Date
     // dateOfBirth: Date
 
-    @Column({unique: true, nullable: true})
+    @Column({nullable: true})
     @IsOptional()
-    @IsPhoneNumber(null)
+    @IsPhoneNumber('zz')
     mobile: string
 
     @Column({default: 'user'})
@@ -49,8 +50,10 @@ export class User extends BaseEntity {
     @Column({unique: true, nullable: false})
     @IsDefined({ groups: [CREATE] })
     @IsOptional({ groups: [UPDATE] })
-    @IsEmail()
-    // @IsUniqueCustom(UserService) --> to fix
+    // @IsEmail()
+    @IsEmail( {}, { always: true })
+    // @IsUniqueCustom(UserService)
+    // @IsUniqueCustom(UserService, { always: true })
     email: string
 
     // @Column({nullable: true, select: false}) //-> remove prop from find*** repository methods

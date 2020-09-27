@@ -25,7 +25,7 @@ export class UserController {
     }
     
     @Get("/:id")
-    getOne(@Param("id") id: number) {
+    getById(@Param("id") id: number) {
         console.log(`GET /users/${id}`.bgCyan);
         return this.userService.getById(id);
     }
