@@ -1,6 +1,6 @@
 import {Entity, Column, PrimaryGeneratedColumn, OneToMany} from 'typeorm';
-import { Post } from './post';
-import { BaseEntity } from './baseEntity';
+import { Post } from './Post';
+import { BaseEntity } from './BaseEntity';
 
 export type UserType = 'admin' | 'user'
 
@@ -10,22 +10,22 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
     
-    // @Column({name: 'first_name', nullable: false})
+    // @Column({name: 'first_name'})
     @Column({nullable: false})
     firstName: string
     @Column({nullable: false})
     lastName: string
     @Column({nullable: true, type: 'date'})
     dateOfBirth: Date
-    @Column({unique: true, nullable: false})
+    @Column({unique: true, nullable: true})
     mobile: string
-    @Column({unique: true, nullable: false})
+    @Column({unique: true, nullable: true})
     email: string
     @Column({default: 'user'})
     type: UserType
-    @Column({nullable: false})
+    @Column({nullable: true})
     password: string
-    @Column({nullable: false})
+    @Column({nullable: true})
     salt: string
 
     accessToken?: string
@@ -34,7 +34,6 @@ export class User extends BaseEntity {
         onDelete: "CASCADE",
         onUpdate: "CASCADE"
     })
-    // posts: Array<Post>
-    posts: Post[]
+    posts: Post[] // Array<Post>
 
 }
