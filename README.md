@@ -12,4 +12,4 @@ additional modul plugin used for this application are :
 
 ts-node-dev is used in development lifecycle
 
-it will soon be hosted and will run live as soon as possible
+it will soon be hosted and will run live as soon as possible with ts-node
