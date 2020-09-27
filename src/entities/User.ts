@@ -2,7 +2,8 @@ import {Entity, Column, PrimaryGeneratedColumn, OneToMany} from 'typeorm';
 import { Post } from './Post';
 import { BaseEntity } from './BaseEntity';
 import { Exclude } from 'class-transformer';
-import { IsDate, IsDateString, IsDefined, IsEmail, IsEmpty, IsOptional, IsPhoneNumber, IsString, Length } from 'class-validator';
+import { IsDefined, IsEmail, IsEmpty, IsOptional, IsPhoneNumber, IsString, Length } from 'class-validator';
+import { IsDateStringCustom } from './customValidators';
 
 export type UserProfile = 'admin' | 'user'
 
@@ -23,14 +24,15 @@ export class User extends BaseEntity {
 
     @Column({nullable: false})
     @IsDefined()
-    @IsString()
+    @IsString() 
     @Length(2, 25)
     lastName: string
     
     @Column({type: 'date', nullable: true})
     @IsOptional()
-    @IsDateString()
-    dateOfBirth: Date
+    @IsDateStringCustom({ always: true }) // @IsDateString() --> replaced with custom validation decorator
+    birthDate: Date
+    // dateOfBirth: Date
 
     @Column({unique: true, nullable: true})
     @IsOptional()

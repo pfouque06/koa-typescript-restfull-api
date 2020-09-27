@@ -12,6 +12,7 @@ import { User } from "../entities/User";
 import { UserService } from "../services/UserService";
 import { hash, genSalt } from "bcrypt";
 import { validate, ValidationError } from "class-validator";
+import * as moment from "moment";
 
 // @Controller()
 @JsonController("/users") // to ensure server deals only with json body types and uri starts with /users
@@ -43,6 +44,9 @@ export class UserController {
         // validattion steps
         const validationResult: Array<ValidationError> = await validate(instance);
         if (validationResult.length > 0) throw validationResult;
+
+        // reset birthDate since date format issue between mysql and validation constraint type for now
+        if (user.birthDate) { instance.birthDate = null}
 
         // generate salt & hash password with salt
         instance.salt = await genSalt();
