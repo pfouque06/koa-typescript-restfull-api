@@ -1,6 +1,6 @@
 import 'colors';
 import { Service } from "typedi/decorators/Service";
-import { Connection, Repository } from "typeorm";
+import { Connection } from "typeorm";
 import { User } from "../entities/User";
 import { BaseService } from "./BaseService";
 

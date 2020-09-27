@@ -67,7 +67,7 @@ const startApp = async () => {
     app.use(router.routes()).use(router.allowedMethods);
 
     // start listener
-    app.listen(server_port).on('listening', () => console.log(`Server started on port = ${server_port}, test on http://localhost:${server_port}`.blue.bold))
+    app.listen(server_port).on('listening', () => console.log(`Server started on port = ${server_port}, test on http://localhost:${server_port}`.bgBlue.bold))
 }
 
 startApp();
