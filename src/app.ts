@@ -4,9 +4,9 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import { createKoaServer, useContainer } from 'routing-controllers';
 import { Container } from 'typedi';
-import { UserController } from './controllers/UserController';
+import { controllers } from './controllers';
 import { DBconnection } from './entities/DBConnection';
-import { UserService } from './services/UserService';
+import { services } from './services';
 
 // load .env data
 config(); const {server_port} = process.env;
@@ -22,14 +22,13 @@ const startApp = async () => {
     // const app: Koa<DefaultState, DefaultContext> = new Koa();
     const app: Koa = createKoaServer({
         // controllerd init with routing-controllers module
-        controllers: [UserController],
+        controllers: controllers,
     })
     
     // DB connection & entities init with typeorm module
     await DBconnection(app);
     
     // Services & Repository init with typedi module
-    const services = [UserService]
     services.forEach( (service) => {
         Container.set(service, new service(app.context.db))
     })

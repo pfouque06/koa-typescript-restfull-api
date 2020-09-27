@@ -3,7 +3,7 @@ import { Post } from './Post';
 import { BaseEntity } from './BaseEntity';
 import { Exclude } from 'class-transformer';
 import { IsDefined, IsEmail, IsEmpty, IsOptional, IsPhoneNumber, IsString, Length } from 'class-validator';
-import { IsDateStringCustom } from './customValidators';
+import { CREATE, IsDateStringCustom, IsUniqueCustom, UPDATE } from './customValidators';
 
 export type UserProfile = 'admin' | 'user'
 
@@ -17,19 +17,21 @@ export class User extends BaseEntity {
     
     // @Column({name: 'first_name'})
     @Column({nullable: false})
-    @IsDefined()
+    @IsDefined({ groups: [CREATE] })
+    @IsOptional({ groups: [UPDATE] })
     @IsString()
     @Length(2, 25)
     firstName: string
 
     @Column({nullable: false})
-    @IsDefined()
+    @IsDefined({ groups: [CREATE] })
+    @IsOptional({ groups: [UPDATE] })
     @IsString() 
     @Length(2, 25)
     lastName: string
     
     @Column({type: 'date', nullable: true})
-    @IsOptional()
+    @IsOptional({ always: true })
     @IsDateStringCustom({ always: true }) // @IsDateString() --> replaced with custom validation decorator
     birthDate: Date
     // dateOfBirth: Date
@@ -45,14 +47,17 @@ export class User extends BaseEntity {
     profile: UserProfile
 
     @Column({unique: true, nullable: false})
-    @IsDefined()
+    @IsDefined({ groups: [CREATE] })
+    @IsOptional({ groups: [UPDATE] })
     @IsEmail()
+    // @IsUniqueCustom(UserService) --> to fix
     email: string
 
     // @Column({nullable: true, select: false}) //-> remove prop from find*** repository methods
     @Column({nullable: true})
     @Exclude() // -> exclude prop from json on ouput
-    @IsDefined()
+    @IsDefined({ groups: [CREATE] })
+    @IsOptional({ groups: [UPDATE] })
     @IsString()
     @Length(8, 25)
     password: string
