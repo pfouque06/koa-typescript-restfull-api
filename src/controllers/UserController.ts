@@ -45,7 +45,7 @@ export class UserController {
     @Authorized(["admin", "user"])
     allAccess(@CurrentUser() user: DeepPartial<User>) {
         console.log(`GET /users/access`.bgCyan);
-        return `TEST: access validated for ${user.email}`;
+        return `TEST: access validated for ${user.email} as ${user.profile} `;
     }
     
     @Get()
