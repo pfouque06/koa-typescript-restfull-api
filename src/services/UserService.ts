@@ -5,7 +5,7 @@ import { sign } from 'jsonwebtoken';
 import { NotFoundError, UnauthorizedError } from 'routing-controllers';
 import { Service } from 'typedi';
 import { Connection, DeepPartial, ObjectLiteral } from "typeorm";
-import { CREATE, UPDATE } from '../entities/customValidators';
+import { CREATE, UPDATE } from '../entities/customDecorators';
 import { LoginForm } from '../entities/forms/LoginForm';
 import { User } from "../entities/User";
 import { UserRepository } from '../repositories/UserRepository';

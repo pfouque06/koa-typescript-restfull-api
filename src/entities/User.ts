@@ -3,13 +3,13 @@ import { Post } from './Post';
 import { BaseEntity } from './BaseEntity';
 import { Exclude } from 'class-transformer';
 import { IsDefined, IsEmail, IsEmpty, IsOptional, IsPhoneNumber, IsString, Length } from 'class-validator';
-import { CREATE, IsDateStringCustom, IsUniqueCustom, UPDATE } from './customValidators';
+import { CREATE, IsDateStringCustom, IsUniqueCustom, ToLowerCaseCustom, UPDATE } from './customDecorators';
 
 export type UserProfile = 'admin' | 'user'
 
 @Entity({name: 'users'})
 export class User extends BaseEntity {
-
+    
     @PrimaryGeneratedColumn()
     @IsEmpty({always: true, message: 'please, do not provide ID value'})
     id: number;
@@ -20,13 +20,15 @@ export class User extends BaseEntity {
     @IsOptional({ groups: [UPDATE] })
     @IsString()
     @Length(2, 25)
+    @ToLowerCaseCustom()
     firstName: string
-
+    
     @Column({nullable: false})
     @IsDefined({ groups: [CREATE] })
     @IsOptional({ groups: [UPDATE] })
     @IsString() 
     @Length(2, 25)
+    @ToLowerCaseCustom()
     lastName: string
     
     @Column({type: 'date', nullable: true})
@@ -34,17 +36,17 @@ export class User extends BaseEntity {
     @IsDateStringCustom({ always: true }) // @IsDateString() --> replaced with custom validation decorator
     birthDate: Date
     // dateOfBirth: Date
-
+    
     @Column({nullable: true})
     @IsOptional()
     @IsPhoneNumber('zz')
     mobile: string
-
+    
     @Column({default: 'user'})
     @Exclude() // -> exclude prop from json on ouput
     @IsEmpty({always: true, message: 'unknown prop!'})
     profile: UserProfile
-
+    
     @Column({unique: true, nullable: false})
     @IsDefined({ groups: [CREATE] })
     @IsOptional({ groups: [UPDATE] })
@@ -53,7 +55,7 @@ export class User extends BaseEntity {
     // @IsUniqueCustom(UserService)
     @IsUniqueCustom(User, { always: true })
     email: string
-
+    
     // @Column({nullable: true, select: false}) //-> remove prop from find*** repository methods
     @Column({nullable: true})
     @Exclude() // -> exclude prop from json on ouput
@@ -62,19 +64,19 @@ export class User extends BaseEntity {
     @IsString()
     @Length(8, 25)
     password: string
-
+    
     // @Column({nullable: true, select: false}) //-> remove prop from find*** repository methods
     @Column({nullable: true})
     @Exclude() // -> exclude prop from json  on ouput
     @IsEmpty({always: true, message: 'unknown prop!'})
     salt: string
-
+    
     accessToken?: string
-
+    
     @OneToMany(() => Post, (post: Post) => post.user, {
         onDelete: "CASCADE",
         onUpdate: "CASCADE"
     })
     posts: Post[] // Array<Post>
-
+    
 }
