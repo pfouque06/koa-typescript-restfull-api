@@ -11,6 +11,6 @@ additional modul plugin used for this application are :
 - dotenv for hiding env properties
 - moment for better date type handling
 
-ts-node-dev is used in development lifecycle
+ts-node-dev is used in development lifecycle. Use "npm run dev" command to start the application.
 
 it will soon be hosted and will run live as soon as possible with ts-node
