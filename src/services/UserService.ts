@@ -16,11 +16,19 @@ const { JWT_SECRET } = process.env
 
 @Service()
 export class UserService extends BaseService<User> {
+
+    // public userRepository: BaseRepository<User>;
+    
+    // constructor(db: Connection) {
+    //     super(db.getRepository(User), new User()); // do nothing yet despite provide generic type for service uniqueness validation
+    //     this.userRepository = this.repository;
+    //     console.log('Start UserService'.underline);
+    // }
     
     public userRepository: UserRepository;
-    
+
     constructor(db: Connection) {
-        super(); // do nothing yet despite provide generic type for service uniqueness validation
+        super(new User()); // do nothing yet despite provide generic type for service uniqueness validation
         this.userRepository = new UserRepository(db);
         console.log('Start UserService'.underline);
     }

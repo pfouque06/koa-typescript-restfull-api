@@ -5,17 +5,16 @@ export abstract class BaseService<T> {
 
     // public repository: BaseRepository<T>;
 
+    // constructor(repo: Repository<T>, type: T) {
+    //     // this.repository = new BaseRepository<T>(repo, type);
+    //     console.log(`Start BaseService<${typeof type}>`.underline);
+    // }
+    
+    constructor(type: T) {
+        // console.log(`Start BaseService<${typeof type}>`.underline);
+    }
+
     async abstract getById(id: number, where?: ObjectLiteral): Promise<T>;
 
     async abstract isUnique(password: string): Promise<boolean>;
-
-    async checkService(): Promise<boolean> {
-        return true;
-        // todo : identify how to check T type !!!!
-        // return typeof object === T
-        // if (object as T) {
-        //     return true;
-        // }
-        // return false;
-    }
 }

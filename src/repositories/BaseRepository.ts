@@ -3,8 +3,9 @@ import { Repository, ObjectLiteral, DeepPartial } from "typeorm"
 export class BaseRepository<T> {
     public readonly repo: Repository<T>;
     
-    constructor(repo: Repository<T>) {
+    constructor(repo: Repository<T>, type: T) {
         this.repo = repo;
+        console.log(`Start BaseRepository<${typeof type}>`.underline );
     }
     
     async getData(): Promise<Array<T>> {
