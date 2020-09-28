@@ -40,13 +40,13 @@ const startApp = async () => {
         // authorizationChecker: async (): Promise<boolean> => {
         async authorizationChecker(action: Action, profiles: string[]): Promise<boolean> {
             try {
-                console.log(`@startApp.authorizationChecker()`.cyan);
+                console.log(`@startApp.authorizationChecker(profiles: ${profiles})`.cyan);
                 const token = getJWT(action.request.headers);
                 if (!verify(token, JWT_SECRET)) throw new UnauthorizedError();
                 const decodedUser: DeepPartial<User> = decodeJWT(token);
                 const user = await getConnection().getRepository(User).findOneOrFail(decodedUser.id)
                 if (!user) throw Error();
-                if (profiles.length && profiles.find(profile => user.profile == profile)) return true;
+                if (!profiles.length || (profiles.length && profiles.find(profile => user.profile == profile))) return true;
                 return false
             } catch {
                 throw new UnauthorizedError();

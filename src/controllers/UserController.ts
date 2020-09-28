@@ -19,26 +19,33 @@ export class UserController {
         console.log(`GET /users/login`.bgCyan);
         return this.userService.login(userCredentials);
     }
-
+    
     @Get("/access")
     @Authorized()
     access(@CurrentUser() user: DeepPartial<User>) {
         console.log(`GET /users/access`.bgCyan);
         return `TEST: access validated for ${user.email}`;
     }
-
+    
     @Get("/access/user")
     @Authorized("user")
     userAccess(@CurrentUser() user: DeepPartial<User>) {
         console.log(`GET /users/access/user`.bgCyan);
         return `TEST: user access validated for ${user.email}`;
     }
-
+    
     @Get("/access/admin")
     @Authorized("admin")
     adminAccess(@CurrentUser() user: DeepPartial<User>) {
         console.log(`GET /users/access/admin`.bgCyan);
         return `TEST: admin access validated for ${user.email}`;
+    }
+    
+    @Get("/access/all")
+    @Authorized(["admin", "user"])
+    allAccess(@CurrentUser() user: DeepPartial<User>) {
+        console.log(`GET /users/access`.bgCyan);
+        return `TEST: access validated for ${user.email}`;
     }
     
     @Get()
@@ -60,17 +67,14 @@ export class UserController {
     }
     
     @Put("/:id")
-    async put(
-        @Param("id") id: number,
-        @Body({ validate: true }) user: DeepPartial<User>
-        ) {
-            console.log(`PUT /users/${id}`.bgCyan);
-            return this.userService.update(id, user);
-        }
-        
-        @Delete("/:id")
-        remove(@Param("id") id: number) {
-            console.log(`DEL /users/${id}`.bgCyan);
-            return this.userService.del(id);
-        }
+    async put(@Param("id") id: number, @Body({ validate: true }) user: DeepPartial<User>) {
+        console.log(`PUT /users/${id}`.bgCyan);
+        return this.userService.update(id, user);
     }
+    
+    @Delete("/:id")
+    remove(@Param("id") id: number) {
+        console.log(`DEL /users/${id}`.bgCyan);
+        return this.userService.del(id);
+    }
+}
