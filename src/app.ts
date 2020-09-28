@@ -2,7 +2,7 @@ import 'colors';
 import { config} from 'dotenv';
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
-import { Action, createKoaServer, CurrentUser, UnauthorizedError, useContainer } from 'routing-controllers';
+import { Action, createKoaServer, UnauthorizedError, useContainer } from 'routing-controllers';
 import { Container } from 'typedi';
 import { controllers } from './controllers';
 import { DBconnection } from './entities/DBConnection';

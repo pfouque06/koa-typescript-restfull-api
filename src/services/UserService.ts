@@ -81,10 +81,10 @@ export class UserService extends BaseService<User> {
         
         // validation steps
         const validationResult: Array<ValidationError> = await validate(instance, validatorOptions);
-        if (validationResult.length > 0) throw validationResult;
+        if (validationResult.length > 0) throw validationResult.map(constraints => constraints);
         
-        // check email unicity
-        if ( user.email && ! await this.isUnique(user.email)) throw `email ${user.email} is not unique`;
+        // check email unicity already done in custom validator decorator : IsUniqueCustom
+        // if ( user.email && ! await this.isUnique(user.email)) throw `email ${user.email} is not unique`;
 
         // generate salt & hash password with salt if any
         if (instance.password) {
