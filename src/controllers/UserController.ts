@@ -2,7 +2,7 @@ import { config } from "dotenv";
 import { Param, Body, Get,  Post, Put, Delete, JsonController,  Authorized, CurrentUser } from "routing-controllers";
 import { DeepPartial } from "typeorm";
 import { LoginForm } from "../entities/forms/LoginForm";
-import { User } from "../entities/User";
+import { User } from "../entities/models/User";
 import { UserService } from "../services/UserService";
 
 config()

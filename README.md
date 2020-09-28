@@ -13,6 +13,15 @@ additional modul plugin used for this application are :
 
 the application rely on a local mysql database.
 
+create .env file for static properties like this, for instance:
+db_host=localhost
+db_port=3306
+db_user=root
+db_pwd=
+db_schema=koatypescript
+server_port=8080
+JWT_SECRET=
+
 ts-node-dev is used in development lifecycle. Use "npm run dev" command to start the application.
 
 it will soon be hosted and will run live as soon as possible with ts-node

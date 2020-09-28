@@ -7,7 +7,7 @@ import { Service } from 'typedi';
 import { Connection, DeepPartial, ObjectLiteral } from "typeorm";
 import { CREATE, UPDATE } from '../entities/customDecorators';
 import { LoginForm } from '../entities/forms/LoginForm';
-import { User } from "../entities/User";
+import { User } from "../entities/models/User";
 import { UserRepository } from '../repositories/UserRepository';
 import { BaseService } from './BaseService';
 

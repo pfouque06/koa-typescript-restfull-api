@@ -9,7 +9,7 @@ import { DBconnection } from './entities/DBConnection';
 import { services } from './services';
 import { decode, verify } from 'jsonwebtoken'
 import { DeepPartial, getConnection } from 'typeorm';
-import { User } from './entities/User';
+import { User } from './entities/models/User';
 
 // load .env data
 config(); const {server_port, JWT_SECRET } = process.env;

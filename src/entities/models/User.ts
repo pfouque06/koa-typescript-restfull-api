@@ -3,7 +3,7 @@ import { Post } from './Post';
 import { BaseEntity } from './BaseEntity';
 import { Exclude } from 'class-transformer';
 import { IsDefined, IsEmail, IsEmpty, IsOptional, IsPhoneNumber, IsString, Length } from 'class-validator';
-import { CREATE, IsDateStringCustom, IsUniqueCustom, ToLowerCaseCustom, UPDATE } from './customDecorators';
+import { CREATE, UPDATE, ToLowerCaseCustom, IsDateStringCustom, IsUniqueCustom } from '../customDecorators';
 
 export type UserProfile = 'admin' | 'user'
 
