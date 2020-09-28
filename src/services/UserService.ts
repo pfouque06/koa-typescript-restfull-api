@@ -1,11 +1,18 @@
 import { genSalt, hash } from 'bcrypt';
 import { ValidationError, validate, ValidatorOptions } from 'class-validator';
+import { config } from 'dotenv';
+import { sign } from 'jsonwebtoken';
+import { NotFoundError, UnauthorizedError } from 'routing-controllers';
 import { Service } from 'typedi';
 import { Connection, DeepPartial, ObjectLiteral } from "typeorm";
 import { CREATE, UPDATE } from '../entities/customValidators';
+import { LoginForm } from '../entities/forms/LoginForm';
 import { User } from "../entities/User";
 import { UserRepository } from '../repositories/UserRepository';
 import { BaseService } from './BaseService';
+
+config()
+const { JWT_SECRET } = process.env
 
 @Service()
 export class UserService extends BaseService<User> {
@@ -18,13 +25,40 @@ export class UserService extends BaseService<User> {
         console.log('Start UserService'.underline);
     }
     
+    async login(userCredentials: LoginForm): Promise<User> {
+        console.log(`-> UserService.login(email: ${userCredentials.email})`.bgYellow);
+        // user Credentials validation
+        const validationRes: Array<ValidationError> = await validate(userCredentials)
+        if (validationRes.length > 0) throw validationRes
+        const { email, password } = userCredentials
+        
+        let user: Exclude<User, { accessToken: string }>
+        try {
+            user = await this.userRepository.getById(null, { email })
+        } catch {
+            throw new NotFoundError(`user ${userCredentials.email} not found`)
+        }
+        try {
+            const hashedPass = await hash(password, user.salt)
+            if (hashedPass === user.password) {
+                delete user.password // unsafe to keep 
+                delete user.salt // unsafe to keep 
+                // const jwt = sign(JSON.parse(JSON.stringify(user)), JWT_SECRET)
+                const jwt = sign({...user}, JWT_SECRET) // similar syntax
+                return { ...user, accessToken: jwt }
+            } else throw Error()
+        } catch {
+            throw new UnauthorizedError(`wrong password for ${userCredentials.email}`)
+        }
+    }
+
     async getData():  Promise<Array<User>> {
         console.log(`-> UserService.getAll()`.bgYellow);
         return await this.userRepository.getData();
     }
     
     async getById(id: number, where?: ObjectLiteral): Promise<User> {
-        console.log(`-> UserService.getById(id: ${id})`.bgYellow);
+        console.log(`-> UserService.getById(id: ${id}, where: ${JSON.stringify(where)})`.bgYellow);
         return await this.userRepository.getById(id, where);
     }
     

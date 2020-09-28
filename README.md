@@ -6,6 +6,7 @@ additional modul plugin used for this application are :
 - typedi for dependancy injection in services
 - routing-controllers, koa-bodyparser for controllers
 - bcrypt for pasword hash and salt
+- jsonwebtoken for JWT handling
 - colors for console log coloring
 - dotenv for hiding env properties
 - moment for better date type handling
