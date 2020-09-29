@@ -71,30 +71,6 @@ export class UserService extends BaseService<User> {
         console.log(`-> UserService.getAll()`.bgYellow);
         return await this.userRepository.getData();
     }
-    
-    async resetData(): Promise<boolean> {
-        console.log(`-> UserService.resetData()`.bgYellow);
-
-        // get inital users from static userData
-        let users: Array<DeepPartial<User>> = new Array();
-        userData.forEach( async userCredentials => {
-
-            // user Credentials validation
-            const validationRes: Array<ValidationError> = await validate(userCredentials)
-            if (validationRes.length > 0) throw validationRes
-
-            // get instance
-            const instance: DeepPartial<User> = {...userCredentials}
-
-            // generate salt & hash password with salt if any
-            instance.salt = await genSalt();
-            instance.password = await hash(instance.password || "", instance.salt);
-
-            // add instance to users
-            users.push(instance);
-        })
-        return await this.userRepository.resetData(users);
-    }
 
     async getById(id: number, where?: ObjectLiteral): Promise<User> {
         console.log(`-> UserService.getById(id: ${id}, where: ${JSON.stringify(where)})`.bgYellow);
@@ -144,8 +120,12 @@ export class UserService extends BaseService<User> {
         return await this.userRepository.create(user, instance);
     }
     
-    async update(id: number, user: DeepPartial<User>): Promise<User> {
+    async update(id: number, user: DeepPartial<User>, currentUser: DeepPartial<User>): Promise<User> {
         console.log(`-> UserService.update(id: ${id})`.bgYellow);
+        // check id versus own id if current is user profile
+        if (currentUser.profile == 'user' && id != currentUser.id)
+            throw new UnauthorizedError(`Operation not allowed on other users than yourself`);
+        
         const instance: DeepPartial<User> = await this.getValidatedUser(user, { groups: [UPDATE] });
         return await this.userRepository.update(id, instance);
     }
@@ -154,5 +134,28 @@ export class UserService extends BaseService<User> {
         console.log(`-> UserService.del(id: ${id})`.bgYellow);
         return this.userRepository.del(id);
     }
-    
+        
+    async resetData(): Promise<boolean> {
+        console.log(`-> UserService.resetData()`.bgYellow);
+
+        // get inital users from static userData
+        let users: Array<DeepPartial<User>> = new Array();
+        userData.forEach( async userCredentials => {
+
+            // user Credentials validation
+            const validationRes: Array<ValidationError> = await validate(userCredentials)
+            if (validationRes.length > 0) throw validationRes
+
+            // get instance
+            const instance: DeepPartial<User> = {...userCredentials}
+
+            // generate salt & hash password with salt if any
+            instance.salt = await genSalt();
+            instance.password = await hash(instance.password || "", instance.salt);
+
+            // add instance to users
+            users.push(instance);
+        })
+        return await this.userRepository.resetData(users);
+    }
 }

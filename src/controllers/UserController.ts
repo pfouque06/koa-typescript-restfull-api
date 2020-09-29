@@ -54,13 +54,6 @@ export class UserController {
         return this.userService.getData();
     }
     
-    @Post('/reset')
-    resetData() {
-        console.log(`POST /reset`.bgCyan);
-        if (!this.userService.resetData()) return 'KO';
-        return 'OK'
-    }
-    
     @Get("/:id")
     getById(@Param("id") id: number) {
         console.log(`GET /users/${id}`.bgCyan);
@@ -68,20 +61,31 @@ export class UserController {
     }
     
     @Post()
+    @Authorized("admin")
     async post(@Body() user: DeepPartial<User>) {
         console.log(`POST /users`.bgCyan);
         return this.userService.create(user);
     }
     
     @Put("/:id")
-    async put(@Param("id") id: number, @Body({ validate: true }) user: DeepPartial<User>) {
+    @Authorized(["admin", "user"])
+    async put(@Param("id") id: number, @Body({ validate: true }) user: DeepPartial<User>, @CurrentUser() currentUser: DeepPartial<User>) {
         console.log(`PUT /users/${id}`.bgCyan);
-        return this.userService.update(id, user);
+        return this.userService.update(id, user, currentUser);
     }
     
     @Delete("/:id")
+    @Authorized("admin")
     remove(@Param("id") id: number) {
         console.log(`DEL /users/${id}`.bgCyan);
         return this.userService.del(id);
+    }
+        
+    @Post('/reset')
+    @Authorized("admin")
+    resetData() {
+        console.log(`POST /reset`.bgCyan);
+        if (!this.userService.resetData()) return 'KO';
+        return 'OK'
     }
 }
