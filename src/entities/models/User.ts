@@ -15,17 +15,15 @@ export class User extends BaseEntity {
     id: number;
     
     // @Column({name: 'first_name'})
-    @Column({nullable: false})
-    @IsDefined({ groups: [CREATE] })
-    @IsOptional({ groups: [UPDATE] })
+    @Column({nullable: true, default: 'none'})
+    @IsOptional({ always: true })
     @IsString()
     @Length(2, 25)
     @ToLowerCaseCustom()
     firstName: string
     
-    @Column({nullable: false})
-    @IsDefined({ groups: [CREATE] })
-    @IsOptional({ groups: [UPDATE] })
+    @Column({nullable: true, default: 'none'})
+    @IsOptional({ always: true })
     @IsString() 
     @Length(2, 25)
     @ToLowerCaseCustom()
@@ -57,7 +55,7 @@ export class User extends BaseEntity {
     email: string
     
     // @Column({nullable: true, select: false}) //-> remove prop from find*** repository methods
-    @Column({nullable: true})
+    @Column({nullable: false})
     @Exclude() // -> exclude prop from json on ouput
     @IsDefined({ groups: [CREATE] })
     @IsOptional({ groups: [UPDATE] })

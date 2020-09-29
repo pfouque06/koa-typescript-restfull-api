@@ -6,6 +6,7 @@ import { NotFoundError, UnauthorizedError } from 'routing-controllers';
 import { Service } from 'typedi';
 import { Connection, DeepPartial, ObjectLiteral } from "typeorm";
 import { CREATE, UPDATE } from '../entities/customDecorators';
+import { userData } from '../entities/data/userData';
 import { LoginForm } from '../entities/forms/LoginForm';
 import { User } from "../entities/models/User";
 import { UserRepository } from '../repositories/UserRepository';
@@ -32,20 +33,26 @@ export class UserService extends BaseService<User> {
         this.userRepository = new UserRepository(db);
         console.log('Start UserService'.underline);
     }
-    
+
     async login(userCredentials: LoginForm): Promise<User> {
         console.log(`-> UserService.login(email: ${userCredentials.email})`.bgYellow);
+
         // user Credentials validation
         const validationRes: Array<ValidationError> = await validate(userCredentials)
         if (validationRes.length > 0) throw validationRes
+        
+        // get required properties
         const { email, password } = userCredentials
         
+        // find user by its email
         let user: Exclude<User, { accessToken: string }>
         try {
             user = await this.userRepository.getById(null, { email })
         } catch {
             throw new NotFoundError(`user ${userCredentials.email} not found`)
         }
+
+        // validate hash from password and user's salt
         try {
             const hashedPass = await hash(password, user.salt)
             if (hashedPass === user.password) {
@@ -65,6 +72,30 @@ export class UserService extends BaseService<User> {
         return await this.userRepository.getData();
     }
     
+    async resetData(): Promise<boolean> {
+        console.log(`-> UserService.resetData()`.bgYellow);
+
+        // get inital users from static userData
+        let users: Array<DeepPartial<User>> = new Array();
+        userData.forEach( async userCredentials => {
+
+            // user Credentials validation
+            const validationRes: Array<ValidationError> = await validate(userCredentials)
+            if (validationRes.length > 0) throw validationRes
+
+            // get instance
+            const instance: DeepPartial<User> = {...userCredentials}
+
+            // generate salt & hash password with salt if any
+            instance.salt = await genSalt();
+            instance.password = await hash(instance.password || "", instance.salt);
+
+            // add instance to users
+            users.push(instance);
+        })
+        return await this.userRepository.resetData(users);
+    }
+
     async getById(id: number, where?: ObjectLiteral): Promise<User> {
         console.log(`-> UserService.getById(id: ${id}, where: ${JSON.stringify(where)})`.bgYellow);
         return await this.userRepository.getById(id, where);
@@ -80,8 +111,8 @@ export class UserService extends BaseService<User> {
         return false;
     }
 
-    async validatedUser(user: DeepPartial<User>, validatorOptions?: ValidatorOptions): Promise<DeepPartial<User>> {
-        console.log(`--> UserService.validatedUser(email: ${user.email})`.bgYellow);
+    async getValidatedUser(user: DeepPartial<User>, validatorOptions?: ValidatorOptions): Promise<DeepPartial<User>> {
+        console.log(`--> UserService.getValidatedUser(email: ${user.email})`.bgYellow);
         console.log(`User: `, user);
 
         // create new User instance
@@ -109,13 +140,13 @@ export class UserService extends BaseService<User> {
 
     async create(user: DeepPartial<User>): Promise<User> {
         console.log(`-> UserService.create(email: ${user.email})`.bgYellow);
-        const instance: DeepPartial<User> = await this.validatedUser(user, { groups: [CREATE] });
+        const instance: DeepPartial<User> = await this.getValidatedUser(user, { groups: [CREATE] });
         return await this.userRepository.create(user, instance);
     }
     
     async update(id: number, user: DeepPartial<User>): Promise<User> {
         console.log(`-> UserService.update(id: ${id})`.bgYellow);
-        const instance: DeepPartial<User> = await this.validatedUser(user, { groups: [UPDATE] });
+        const instance: DeepPartial<User> = await this.getValidatedUser(user, { groups: [UPDATE] });
         return await this.userRepository.update(id, instance);
     }
     

@@ -1,9 +1,11 @@
-import { Repository, ObjectLiteral, DeepPartial } from "typeorm"
+import { Repository, ObjectLiteral, DeepPartial, Connection } from "typeorm"
 
 export class BaseRepository<T> {
+    public readonly db: Connection;
     public readonly repo: Repository<T>;
     
-    constructor(repo: Repository<T>, type: T) {
+    constructor(db: Connection, repo: Repository<T>, type: T) {
+        this.db = db;
         this.repo = repo;
         console.log(`Start BaseRepository<${typeof type}>`.underline );
     }
@@ -12,6 +14,20 @@ export class BaseRepository<T> {
         return await this.repo.find();
     }
     
+    async resetData(users: Array<DeepPartial<T>>): Promise<boolean> {
+        console.log(`-> BaseRepository.resetData()`.bold);
+
+        console.log(`dropping all tables`.underline);
+        await this.db.synchronize(true) // true will drop tables after initial connection
+        .then(() => console.log(`synchronized with DB!`.bgGreen.bold))
+        .catch(() => { console.log('Failed to sync with DB!'.bgRed.bold); return false});
+        // make better sql query to drop exact table and cascaded tables
+
+        console.log(`create init tables`.underline);
+        users.forEach( async user => await this.create(null, user));
+        return true;
+    }
+
     async getById(id: number, where?: ObjectLiteral): Promise<T> {
         if (where) {
             return await this.repo.findOneOrFail(id, { where });

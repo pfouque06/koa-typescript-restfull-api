@@ -1,4 +1,5 @@
-import { IsDefined, IsEmail, IsString } from "class-validator"
+import { IsDefined, IsEmail, IsOptional, IsString } from "class-validator"
+import { UserProfile } from "../models/User"
 
 export class LoginForm {
     @IsDefined({ always: true })
@@ -9,4 +10,7 @@ export class LoginForm {
     @IsDefined({ always: true })
     @IsString()
     password: string
+
+    @IsOptional({ always: true})
+    profile: UserProfile
 }

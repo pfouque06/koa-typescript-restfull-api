@@ -5,7 +5,7 @@ import { BaseRepository } from './BaseRepository';
 export class UserRepository extends BaseRepository<User> {
 
     constructor(db: Connection) {
-        super(db.getRepository(User), new User());
+        super(db, db.getRepository(User), new User());
         console.log('Start UserRepository'.underline);
     }
 }

@@ -54,6 +54,13 @@ export class UserController {
         return this.userService.getData();
     }
     
+    @Post('/reset')
+    resetData() {
+        console.log(`POST /reset`.bgCyan);
+        if (!this.userService.resetData()) return 'KO';
+        return 'OK'
+    }
+    
     @Get("/:id")
     getById(@Param("id") id: number) {
         console.log(`GET /users/${id}`.bgCyan);
