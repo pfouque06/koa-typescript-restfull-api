@@ -22,7 +22,7 @@ export const DBconnection = async (app: Koa) : Promise<void> => {
     })
 
     // connect to DB
-    await connection.synchronize(false) // true will drop tables after initial connection
+    await connection.synchronize(true) // true will drop tables after initial connection
     .then(() => console.log(`synchronized with DB: jdbc:mysql//${db_user}@${db_host}:${db_port}/${db_schema}`.bgGreen.bold))
     .catch(() => console.log('Failed to sync with DB!'.bgRed.bold));
 

@@ -12,15 +12,15 @@ export function IsUniqueCustom(entityClass: Function, validationOptions?: Valida
             async: true,
             validator: {
                 async validate(isUniqueValue: any, args: ValidationArguments): Promise<boolean> {
-                    console.log(`--> IsUniqueCustom.validate(${entityClass.name}, { [${args.property}]: ${isUniqueValue} })`.bgBlue);
+                    // console.log(`--> IsUniqueCustom.validate(${entityClass.name}, { [${args.property}]: ${isUniqueValue} })`.bgBlue);
                     try {                  
                         // console.log(await getConnection().getRepository(entityClass).findOneOrFail(null, { where: { [args.property]: isUniqueValue }}));
                         await getConnection().getRepository(entityClass).findOneOrFail(null, { where: { [args.property]: isUniqueValue }});
                     } catch (error) {
-                        console.log(`\t${entityClass.name}.${args.property}: ${isUniqueValue} is unique`.green);
+                        // console.log(`\t${entityClass.name}.${args.property}: ${isUniqueValue} is unique`.green);
                         return true;
                     }
-                    console.log(`\t${entityClass.name}.${args.property}: ${isUniqueValue} is NOT unique`.red);
+                    // console.log(`\t${entityClass.name}.${args.property}: ${isUniqueValue} is NOT unique`.red);
                     return false;
                 },
                 defaultMessage(args: ValidationArguments): string { // here you can provide default error message if validation failed

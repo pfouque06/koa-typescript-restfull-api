@@ -1,16 +1,21 @@
-import { IsDefined, IsEmail, IsOptional, IsString } from "class-validator"
-import { UserProfile } from "../models/User"
+import { Exclude } from "class-transformer"
+import { IsDefined, IsEmail, IsOptional, IsString, Length } from "class-validator"
+import { IsUniqueCustom } from "../customDecorators"
+import { User, UserProfile } from "../models/User"
 
 export class LoginForm {
-    @IsDefined({ always: true })
+    @IsDefined()
     @IsEmail()
-    @IsString()
+    // @IsString()
+    // @IsUniqueCustom(User)
     email: string
     
-    @IsDefined({ always: true })
+    @IsDefined()
     @IsString()
+    // @Length(5, 25)
+    // @Exclude() // -> exclude prop from json on ouput
     password: string
 
-    @IsOptional({ always: true})
+    @IsOptional()
     profile: UserProfile
 }

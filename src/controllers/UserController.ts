@@ -20,6 +20,19 @@ export class UserController {
         return this.userService.login(userCredentials);
     }
     
+    @Post('/logout')
+    @Authorized()
+    async logout(@CurrentUser() currentUser: DeepPartial<User>): Promise<boolean> {
+        console.log(`GET /users/login`.bgCyan);
+        return this.userService.logout(currentUser);
+    }
+    
+    @Post('/register')
+    async register(@Body() userCredentials: LoginForm): Promise<User> {
+        console.log(`GET /users/register`.bgCyan);
+        return this.userService.register(userCredentials);
+    }
+    
     @Get("/access")
     @Authorized()
     access(@CurrentUser() user: DeepPartial<User>) {
@@ -43,25 +56,27 @@ export class UserController {
     
     @Get("/access/all")
     @Authorized(["admin", "user"])
-    allAccess(@CurrentUser() user: DeepPartial<User>) {
+    allAccess(@CurrentUser() currentUser: DeepPartial<User>) {
         console.log(`GET /users/access`.bgCyan);
-        return `TEST: access validated for ${user.email} as ${user.profile} `;
+        return `TEST: access validated for ${currentUser.email} as ${currentUser.profile} `;
     }
     
     @Get()
+    // @Authorized()
     getAll() {
         console.log(`GET /users`.bgCyan);
-        return this.userService.getData();
+        return this.userService.getAll();
     }
     
     @Get("/:id")
+    // @Authorized()
     getById(@Param("id") id: number) {
         console.log(`GET /users/${id}`.bgCyan);
         return this.userService.getById(id);
     }
     
     @Post()
-    @Authorized("admin")
+    // @Authorized("admin")
     async post(@Body() user: DeepPartial<User>) {
         console.log(`POST /users`.bgCyan);
         return this.userService.create(user);
@@ -75,15 +90,15 @@ export class UserController {
     }
     
     @Delete("/:id")
-    @Authorized("admin")
+    // @Authorized("admin")
     remove(@Param("id") id: number) {
         console.log(`DEL /users/${id}`.bgCyan);
         return this.userService.del(id);
     }
         
     @Post('/reset')
-    @Authorized("admin")
-    resetData() {
+    // @Authorized("admin")
+    async resetData() {
         console.log(`POST /reset`.bgCyan);
         if (!this.userService.resetData()) return 'KO';
         return 'OK'

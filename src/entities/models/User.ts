@@ -40,17 +40,10 @@ export class User extends BaseEntity {
     @IsPhoneNumber('zz')
     mobile: string
     
-    @Column({default: 'user'})
-    @Exclude() // -> exclude prop from json on ouput
-    @IsEmpty({always: true, message: 'unknown prop!'})
-    profile: UserProfile
-    
     @Column({unique: true, nullable: false})
     @IsDefined({ groups: [CREATE] })
     @IsOptional({ groups: [UPDATE] })
-    // @IsEmail()
-    @IsEmail( {}, { always: true })
-    // @IsUniqueCustom(UserService)
+    @IsEmail( {}, { always: true }) // @IsEmail()
     @IsUniqueCustom(User, { always: true })
     email: string
     
@@ -68,6 +61,10 @@ export class User extends BaseEntity {
     @Exclude() // -> exclude prop from json  on ouput
     @IsEmpty({always: true, message: 'unknown prop!'})
     salt: string
+    
+    @Column({nullable: true, default: 'user'})
+    @IsOptional({ always: true })
+    profile: UserProfile
     
     accessToken?: string
     

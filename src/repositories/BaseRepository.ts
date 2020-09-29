@@ -5,12 +5,12 @@ export class BaseRepository<T> {
     public readonly repo: Repository<T>;
     
     constructor(db: Connection, repo: Repository<T>, type: T) {
+        console.log(`Start BaseRepository<${typeof type}>`.underline );
         this.db = db;
         this.repo = repo;
-        console.log(`Start BaseRepository<${typeof type}>`.underline );
     }
     
-    async getData(): Promise<Array<T>> {
+    async getAll(): Promise<Array<T>> {
         return await this.repo.find();
     }
     
@@ -42,16 +42,25 @@ export class BaseRepository<T> {
         return entity;
     }
     
-    async resetData(users: Array<DeepPartial<T>>): Promise<boolean> {
-        console.log(`-> BaseRepository.resetData()`.bold);
+    // repositor flush function
+    async flush(): Promise<boolean> {
+        console.log(`-> BaseRepository.flush()`.bold);
         
         console.log(`dropping all tables`.underline);
+        // await this.repo.clear() --> mySQL error with TRUNCATE mode --> flush db via Connection method
         await this.db.synchronize(true) // true will drop tables after initial connection
         .then(() => console.log(`synchronized with DB!`.bgGreen.bold))
         .catch(() => { console.log('Failed to sync with DB!'.bgRed.bold); return false});
-        // make better sql query to drop exact table and cascaded tables
-        
-        console.log(`create init tables`.underline);
+
+        // !!!!! make better sql query to drop exact table and cascaded tables
+        // DROP TABLE `koatypescript`.`users`;
+
+        return true;
+    }
+
+    // push data set function 
+    async pushDataSet(users: Array<DeepPartial<T>>): Promise<boolean> {
+        console.log(`-> BaseRepository.pushDataSet()`.bold);
         users.forEach( async user => await this.create(null, user));
         return true;
     }
