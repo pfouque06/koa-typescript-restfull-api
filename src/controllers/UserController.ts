@@ -5,12 +5,12 @@ import { LoginForm } from "../entities/forms/LoginForm";
 import { User } from "../entities/models/User";
 import { UserService } from "../services/UserService";
 
-config()
+// config()
 
 // @Controller()
 @JsonController("/users") // to ensure server deals only with json body types and uri starts with /users
 export class UserController {
-    
+
     constructor(private readonly userService: UserService) {
         console.log("Start UserController".underline);
     }
@@ -63,21 +63,21 @@ export class UserController {
     }
     
     @Get()
-    // @Authorized()
+    @Authorized()
     getAll() {
         console.log(`GET /users`.bgCyan);
         return this.userService.getAll();
     }
     
     @Get("/:id")
-    // @Authorized()
+    @Authorized()
     getById(@Param("id") id: number) {
         console.log(`GET /users/${id}`.bgCyan);
         return this.userService.getById(id);
     }
     
     @Post()
-    // @Authorized("admin")
+    @Authorized("admin")
     post(@Body() user: DeepPartial<User>) {
         console.log(`POST /users`.bgCyan);
         return this.userService.create(user);
@@ -91,14 +91,14 @@ export class UserController {
     }
     
     @Delete("/:id")
-    // @Authorized("admin")
+    @Authorized("admin")
     remove(@Param("id") id: number) {
         console.log(`DEL /users/${id}`.bgCyan);
         return this.userService.del(id);
     }
         
     @Post('/reset')
-    // @Authorized("admin")
+    @Authorized("admin")
     resetData() {
         console.log(`POST /reset`.bgCyan);
         if (!this.userService.resetData()) return 'KO';
