@@ -1,11 +1,8 @@
-import { config } from "dotenv";
 import { Param, Body, Get,  Post, Put, Delete, JsonController,  Authorized, CurrentUser } from "routing-controllers";
 import { DeepPartial } from "typeorm";
 import { LoginForm } from "../entities/forms/LoginForm";
 import { User } from "../entities/models/User";
 import { UserService } from "../services/UserService";
-
-// config()
 
 // @Controller()
 @JsonController("/users") // to ensure server deals only with json body types and uri starts with /users

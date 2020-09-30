@@ -1,8 +1,10 @@
-import * as Koa from 'koa';
 import { createConnection, getConnection } from 'typeorm';
 import { config } from 'dotenv';
 import 'reflect-metadata';
-import { entities } from './models'
+import { entities } from '../entities/models'
+
+//////////////////////////////////////////////////////
+// DB Factory
 
 // load .env data
 config(); const {db_host, db_port, db_user, db_pwd, db_schema} = process.env;
@@ -15,7 +17,8 @@ export const DBsynchronize = async (flush: boolean) => {
     .catch(() => console.log('Failed to sync with DB!'.bgRed.bold));
 }
 
-export const DBconnection = async (app: Koa) : Promise<void> => {
+// DB connection & entities init with typeorm module
+export const DBconnection = async () : Promise<void> => {
 
 
     const connection = await createConnection({
@@ -32,5 +35,5 @@ export const DBconnection = async (app: Koa) : Promise<void> => {
     // connect to DB
     await DBsynchronize(true);
 
-    app.context.db = connection;
+    // app.context.db = connection;
 }
