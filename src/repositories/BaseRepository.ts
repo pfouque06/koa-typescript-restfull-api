@@ -9,7 +9,6 @@ export abstract class BaseRepository<T> {
         this.repo = repo;
     }
     
-    // repositor flush function
     abstract async flush(): Promise<boolean> ;
     
     async getAll(): Promise<Array<T>> {

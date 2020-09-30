@@ -10,25 +10,26 @@ config()
 // @Controller()
 @JsonController("/users") // to ensure server deals only with json body types and uri starts with /users
 export class UserController {
+    
     constructor(private readonly userService: UserService) {
         console.log("Start UserController".underline);
     }
     
     @Post('/login')
-    async login(@Body() userCredentials: LoginForm): Promise<User> {
+    login(@Body() userCredentials: LoginForm): Promise<User> {
         console.log(`GET /users/login`.bgCyan);
         return this.userService.login(userCredentials);
     }
     
     @Post('/logout')
     @Authorized()
-    async logout(@CurrentUser() currentUser: DeepPartial<User>): Promise<boolean> {
+    logout(@CurrentUser() currentUser: DeepPartial<User>): Promise<boolean> {
         console.log(`GET /users/login`.bgCyan);
         return this.userService.logout(currentUser);
     }
     
     @Post('/register')
-    async register(@Body() userCredentials: LoginForm): Promise<User> {
+    register(@Body() userCredentials: LoginForm): Promise<User> {
         console.log(`GET /users/register`.bgCyan);
         return this.userService.register(userCredentials);
     }
@@ -77,14 +78,14 @@ export class UserController {
     
     @Post()
     // @Authorized("admin")
-    async post(@Body() user: DeepPartial<User>) {
+    post(@Body() user: DeepPartial<User>) {
         console.log(`POST /users`.bgCyan);
         return this.userService.create(user);
     }
     
     @Put("/:id")
     @Authorized(["admin", "user"])
-    async put(@Param("id") id: number, @Body({ validate: true }) user: DeepPartial<User>, @CurrentUser() currentUser: DeepPartial<User>) {
+    put(@Param("id") id: number, @Body({ validate: true }) user: DeepPartial<User>, @CurrentUser() currentUser: DeepPartial<User>) {
         console.log(`PUT /users/${id}`.bgCyan);
         return this.userService.update(id, user, currentUser);
     }
@@ -98,7 +99,7 @@ export class UserController {
         
     @Post('/reset')
     // @Authorized("admin")
-    async resetData() {
+    resetData() {
         console.log(`POST /reset`.bgCyan);
         if (!this.userService.resetData()) return 'KO';
         return 'OK'
