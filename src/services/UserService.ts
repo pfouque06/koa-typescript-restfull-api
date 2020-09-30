@@ -4,9 +4,9 @@ import { config } from 'dotenv';
 import { sign } from 'jsonwebtoken';
 import { NotFoundError, UnauthorizedError } from 'routing-controllers';
 import { Service } from 'typedi';
-import { Connection, DeepPartial, ObjectLiteral } from "typeorm";
+import { DeepPartial, ObjectLiteral } from "typeorm";
 import { CREATE, UPDATE } from '../entities/customDecorators';
-import { userDataSet, userFormDataSet } from '../entities/dataSet/userDataSet';
+import { userDataSet } from '../entities/dataSet/userDataSet';
 import { LoginForm } from '../entities/forms/LoginForm';
 import { User } from "../entities/models/User";
 import { UserRepository } from '../repositories/UserRepository';
@@ -18,22 +18,13 @@ const { JWT_SECRET } = process.env
 @Service()
 export class UserService extends BaseService<User> {
     
-    // public userRepository: BaseRepository<User>;
-    
-    // constructor(db: Connection) {
-    //     super(db.getRepository(User), new User()); // do nothing yet despite provide generic type for service uniqueness validation
-    //     this.userRepository = this.repository;
-    //     console.log('Start UserService'.underline);
-    // }
-    
     public userRepository: UserRepository;
     
-    constructor(db: Connection) {
+    constructor() {
         console.log('Start UserService'.underline);
         super(new User()); // do nothing yet despite provide generic type for service uniqueness validation
-        this.userRepository = new UserRepository(db);
+        this.userRepository = new UserRepository();
         this.resetData(true);
-        // this.resetData();
     }
     
     async login(userCredentials: LoginForm): Promise<User> {
@@ -76,7 +67,6 @@ export class UserService extends BaseService<User> {
         const { email } = currentUser
 
         // find user by its email without accessToken
-        // let user:  DeepPartial<User>;
         let user: Exclude<User, { accessToken: string }>
         try {
             user = await this.userRepository.getById(null, { email })

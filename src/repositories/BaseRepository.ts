@@ -1,14 +1,15 @@
-import { Repository, ObjectLiteral, DeepPartial, Connection } from "typeorm"
+import { Repository, ObjectLiteral, DeepPartial } from "typeorm"
 
-export class BaseRepository<T> {
-    public readonly db: Connection;
+export abstract class BaseRepository<T> {
     public readonly repo: Repository<T>;
     
-    constructor(db: Connection, repo: Repository<T>, type: T) {
+    constructor(repo: Repository<T>, type: T) {
         console.log(`Start BaseRepository<${typeof type}>`.underline );
-        this.db = db;
         this.repo = repo;
     }
+    
+    // repositor flush function
+    abstract async flush(): Promise<boolean> ;
     
     async getAll(): Promise<Array<T>> {
         return await this.repo.find();
@@ -40,22 +41,6 @@ export class BaseRepository<T> {
         const entity = await this.getById(id);
         await this.repo.delete(id);
         return entity;
-    }
-    
-    // repositor flush function
-    async flush(): Promise<boolean> {
-        console.log(`-> BaseRepository.flush()`.bold);
-        
-        console.log(`dropping all tables`.underline);
-        // await this.repo.clear() --> mySQL error with TRUNCATE mode --> flush db via Connection method
-        await this.db.synchronize(true) // true will drop tables after initial connection
-        .then(() => console.log(`synchronized with DB!`.bgGreen.bold))
-        .catch(() => { console.log('Failed to sync with DB!'.bgRed.bold); return false});
-
-        // !!!!! make better sql query to drop exact table and cascaded tables
-        // DROP TABLE `koatypescript`.`users`;
-
-        return true;
     }
 
     // push data set function 

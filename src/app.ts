@@ -69,7 +69,7 @@ const startApp = async () => {
     
     // Services & Repository init with typedi module
     services.forEach( (service) => {
-        Container.set(service, new service(app.context.db))
+        Container.set(service, new service())
     })
     useContainer(Container)
 
