@@ -14,11 +14,10 @@ export class UserRepository extends BaseRepository<User> {
         super(getConnection().getRepository(User), new User());
     }
 
-        
     // repositor flush function
     async flush(): Promise<boolean> {
         console.log(`-> UserRepository.flush()`.bold);
-        
+
         console.log(`dropping all tables`.underline);
         // await DBsynchronize(true);
 

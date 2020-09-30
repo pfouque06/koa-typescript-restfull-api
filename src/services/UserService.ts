@@ -144,9 +144,17 @@ export class UserService extends BaseService<User> {
     
     async update(id: number, user: DeepPartial<User>, currentUser: DeepPartial<User>): Promise<User> {
         console.log(`-> UserService.update(id: ${id})`.bgYellow);
+        
         // check id versus own id if current is user profile
         if (currentUser.profile == 'user' && id != currentUser.id)
         throw new UnauthorizedError(`Operation not allowed on other users than yourself`);
+
+        // validate id
+        try {
+            await this.userRepository.existsById(id);
+        } catch {
+            throw new NotFoundError(`user with id ${id} not found`);
+        }
         
         const instance: DeepPartial<User> = await this.getValidatedUser(user, { groups: [UPDATE] });
         return await this.userRepository.update(id, instance);
@@ -154,6 +162,14 @@ export class UserService extends BaseService<User> {
     
     async del(id: number): Promise<User> {
         console.log(`-> UserService.del(id: ${id})`.bgYellow);
+
+        // validate id
+        try {
+            await this.userRepository.existsById(id);
+        } catch {
+            throw new NotFoundError(`user with id ${id} not found`);
+        }
+
         return this.userRepository.del(id);
     }
     

@@ -1,6 +1,7 @@
 import { Repository, ObjectLiteral, DeepPartial } from "typeorm"
 
 export abstract class BaseRepository<T> {
+
     public readonly repo: Repository<T>;
     
     constructor(repo: Repository<T>, type: T) {
@@ -15,6 +16,12 @@ export abstract class BaseRepository<T> {
         return await this.repo.find();
     }
     
+    async existsById(id: number): Promise<boolean> {
+        // return await this.repo.count({id: id}) == 1;
+        await this.repo.findOneOrFail(id);
+        return true;
+    }
+
     async getById(id: number, where?: ObjectLiteral): Promise<T> {
         if (where) {
             return await this.repo.findOneOrFail(id, { where });
