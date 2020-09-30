@@ -5,16 +5,13 @@ import { httpServerFactor } from './factories/HttpServerFactory';
 
 const startApp = async () => {
     
-    //////////////////////////////////////////////////////
     // DB Factory
     await DBconnection();
     
-    //////////////////////////////////////////////////////
     // RESTFULL Factory
     await restfullFactory();
     
-    //////////////////////////////////////////////////////
-    // HTTP Server configuration
+    // HTTP Server Factory
     await httpServerFactor();
 }
 
