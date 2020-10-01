@@ -5,7 +5,7 @@ import { User } from "../entities/models/User";
 import { BaseRepository } from './BaseRepository';
 
 // load .env data
-config(); const {db_schema} = process.env;
+config(); const {db_type, db_schema} = process.env;
 
 export class UserRepository extends BaseRepository<User> {
 
@@ -22,11 +22,24 @@ export class UserRepository extends BaseRepository<User> {
         // await DBsynchronize(true);
 
         const db = getConnection();
-        await db.query(`SET FOREIGN_KEY_CHECKS=0;`); 
-        for await (const entity of userEntityNames) {
-            const rawData = await db.query(`TRUNCATE TABLE ${db_schema}.${entity};`); 
+        switch (db_type) {
+            case "mysql": {
+                await db.query(`SET FOREIGN_KEY_CHECKS=0;`); 
+                for await (const entity of userEntityNames) {
+                    const rawData = await db.query(`TRUNCATE TABLE ${db_schema}.${entity};`); 
+                }
+                await db.query(`SET FOREIGN_KEY_CHECKS=1;`); 
+                break;
+            }
+            case "sqlite": {
+                for await (const entity of userEntityNames) {
+                    const rawData = await db.query(`DELETE FROM ${entity};`); 
+                    // const rawData = await db.query(`DROP TABLE ${entity};`); 
+                }
+                await db.query(`VACUUM;`); 
+                break;
+            }
         }
-        await db.query(`SET FOREIGN_KEY_CHECKS=1;`); 
 
         return true;
     }
