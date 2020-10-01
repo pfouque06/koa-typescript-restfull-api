@@ -11,7 +11,7 @@ additional modul plugin used for this application are :
 - dotenv for hiding env properties
 - moment for better date type handling
 
-The application rely on a local mysql or sqlite (fore easier deployment) database.
+The application rely on a local mysql or sqlite (for easier deployment) database.
 
 Create .env file for static properties like this: 
 
