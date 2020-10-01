@@ -1,4 +1,4 @@
-koa-typescript-restfull-api
+### koa-typescript-restfull-api
 
 This is a technical Demo for a restfull API server on node.js with typescript and Koa server.
 additional modul plugin used for this application are :
@@ -11,26 +11,25 @@ additional modul plugin used for this application are :
 - dotenv for hiding env properties
 - moment for better date type handling
 
-the application rely on a local mysql database.
+The application rely on a local mysql or sqlite (fore easier deployment) database.
 
-create .env file for static properties like this, for instance for mysql:
+Create .env file for static properties like this: 
 
-db_type=mysql
-db_host=localhost
-db_port=3306
-db_user=root
-db_pwd=
-db_schema=koatypescript
-server_port=8080
-JWT_SECRET=
+- mysql configuration :
+> db_type=mysql  
+> db_host=localhost  
+> db_port=3306  
+> db_user=root  
+> db_pwd=<tbd>  
+> db_schema=koatypescript  
+> server_port=8080  
+> JWT_SECRET=<tbd>  
 
-or for my sqlite:
-
-db_type=sqlite
-db_schema=./koa.db
-server_port=8080
-JWT_SECRET=
-
+- mysql configuration :
+> db_type=sqlite  
+> db_schema=./koa.db  
+> server_port=8080  
+> JWT_SECRET=<tbd>  
 
 ts-node-dev is used in development lifecycle. Use "npm run dev" command to start the application.
 
