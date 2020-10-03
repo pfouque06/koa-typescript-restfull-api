@@ -14,20 +14,20 @@ export class UserController {
     
     @Post('/login')
     login(@Body() userCredentials: LoginForm): Promise<User> {
-        console.log(`GET /users/login`.bgCyan);
+        console.log(`POST /users/login`.bgCyan);
         return this.userService.login(userCredentials);
     }
     
     @Post('/logout')
     @Authorized()
     logout(@CurrentUser() currentUser: DeepPartial<User>): Promise<boolean> {
-        console.log(`GET /users/login`.bgCyan);
+        console.log(`POST /users/logout`.bgCyan);
         return this.userService.logout(currentUser);
     }
     
     @Post('/register')
     register(@Body() userCredentials: LoginForm): Promise<User> {
-        console.log(`GET /users/register`.bgCyan);
+        console.log(`POST /users/register`.bgCyan);
         return this.userService.register(userCredentials);
     }
     
@@ -52,10 +52,10 @@ export class UserController {
         return `TEST: admin access validated for ${user.email}`;
     }
     
-    @Get("/access/all")
+    @Get("/access/test")
     @Authorized(["admin", "user"])
     allAccess(@CurrentUser() currentUser: DeepPartial<User>) {
-        console.log(`GET /users/access`.bgCyan);
+        console.log(`GET /users/access/test`.bgCyan);
         return `TEST: access validated for ${currentUser.email} as ${currentUser.profile} `;
     }
     
