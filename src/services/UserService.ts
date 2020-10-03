@@ -1,4 +1,4 @@
-import { genSalt, hash } from 'bcrypt';
+import { genSalt, hash } from 'bcryptjs';
 import { ValidationError, validate, ValidatorOptions } from 'class-validator';
 import { config } from 'dotenv';
 import { sign } from 'jsonwebtoken';

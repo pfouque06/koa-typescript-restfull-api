@@ -1,6 +1,9 @@
 #npm modules
 node_modules
 
+# build files
+dist
+
 # dotenv file
 .env
 

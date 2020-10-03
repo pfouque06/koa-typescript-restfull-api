@@ -33,4 +33,59 @@ Create .env file for static properties like this:
 
 ts-node-dev is used in development lifecycle. Use "npm run dev" command to start the application.
 
-it will soon be hosted and will run live as soon as possible with ts-node
+tsc --build and ts-node are usde for production
+
+project is live at http://nodejs.koa-typescript-restfull-api.pfouque.fr:8080/
+login with user and store Bearer for user Authorization header: 
+> {
+>   "email": "sam.va@gmail.com",
+>   "password": "secret"
+> }
+
+note: command lines to build up this project :
+
+> # check if npm is installed
+> npm --version
+> # init project with default properties
+> mkdir <project_dir>; cd <project_dir>
+> npm init -y
+> # init git and add remote repository if any (pfouque06/koa-typescript-restfull-api in my case)
+> git init
+> git remote origin git@github.com:pfouque06/koa-typescript-restfull-api.git
+> # install typescript and associated dependancies
+> npm i -D typescript ts-node ts-node-dev @types/node
+> # install tooling
+> npm i dotenv  @types/dotenv colors moment
+> npm i -D @types/colors @types/moment
+> # install ORM tools
+> npm i mysql  sqlite3 typeorm reflect-metadata class-validator class-transformer
+> npm i -D @types/colors @types/moment
+> # install Dependancy Injection tools
+> npm i typedi
+> # install koa module and associated dependancies
+> npm i koa koa-bodyparser koa-router routing-controllers bcrypt jsonwebtoken
+> npm i -D @types/koa @types/koa-bodyparser @types/koa-router @types/bcrypt @types/jsonwebtoken
+> 
+> # add following  in script section of package.json file and use npm command :
+> "dev": "ts-node-dev src/app.ts"
+> "build": "tsc --build",
+> "prod": "ts-node dist/app.js",
+>
+> # make tsconfig.json similar to 
+> {
+>     "compilerOptions": {
+>         "target": "es6",
+>         "module": "commonjs",
+>         "experimentalDecorators": true,
+>         "emitDecoratorMetadata": true,
+>         "outDir": "./dist",
+>         // "strict": true,
+>         // "esModuleInterop": true,
+>     },
+>     "include": ["./src/**/*"],
+>     "exclude": ["node_modules", "__tests__/**/*"]
+> }
+>
+> # use npm command to run application in dev mode:
+> npm run dev
+
