@@ -1,7 +1,7 @@
 import 'colors';
 import { DBconnection } from './factories/DataBaseFactory';
 import { restfullFactory } from './factories/RestfullFactory';
-import { httpServerFactor } from './factories/HttpServerFactory';
+import { httpServerFactory } from './factories/HttpServerFactory';
 
 const startApp = async () => {
     
@@ -12,7 +12,7 @@ const startApp = async () => {
     await restfullFactory();
     
     // HTTP Server Factory
-    await httpServerFactor();
+    await httpServerFactory();
 }
 
 startApp();

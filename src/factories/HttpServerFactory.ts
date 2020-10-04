@@ -10,13 +10,14 @@ import { AuthService } from '../services/AuthService';
 // load .env data
 config(); const {server_port } = process.env;
 
-export const httpServerFactor = async (): Promise<void> => {
+export const httpServerFactory = async (): Promise<void> => {
 
     const authService: AuthService = Container.get<AuthService>(AuthService);
 
     // Koa Server init
     const app: Koa = createKoaServer({ // or const app: Koa<DefaultState, DefaultContext> = new Koa();llers module
         controllers: controllers,
+        errorOverridingMap: {  name: "name", message: "message", stack: "" },
         // authorizationChecker: async (): Promise<boolean> => {
         async authorizationChecker(action: Action, profiles: string[]): Promise<boolean> {
             // console.log(`@startApp.authorizationChecker(profiles: ${profiles})`.cyan);
