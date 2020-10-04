@@ -13,7 +13,7 @@ config(); const {db_type, db_host, db_port, db_user, db_pwd, db_schema} = proces
 // connect to DB
 export const DBsynchronize = async (flush: boolean) => {
     await getConnection().synchronize(flush) // true will drop tables after initial connection
-    .then(() => console.log(`synchronized with DB: jdbc:${db_type}//${db_schema }`.bgGreen.bold))
+    .then(() => console.log(`Synchronize with DB: jdbc:${db_type}//${db_schema }`.bgGreen.bold))
     .catch(() => console.log('Failed to sync with DB!'.bgRed.bold));
 }
 
@@ -24,11 +24,11 @@ export const DBconnection = async () : Promise<void> => {
         case "mysql": {
             await createConnection({
                 type: "mysql",
-                host: db_host,
-                port: +db_port,
+                host: db_host, // default: localhost
+                port: +db_port, // default: 3306
                 username: db_user,
                 password: db_pwd,
-                database: db_schema,
+                database: db_schema, // default: koatypescript
                 entities: entities,  
                 logging: ["schema", "info", "warn", "error", "log"],
             });
@@ -37,8 +37,8 @@ export const DBconnection = async () : Promise<void> => {
         case "sqlite": {
             await createConnection({
                 type: "sqlite",
-                database: db_schema,
-                entities: entities,  
+                database: db_schema, // default: ./koa.db
+                entities: entities,
                 logging: ["schema", "info", "warn", "error", "log"],
             });
             break;

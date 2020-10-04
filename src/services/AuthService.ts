@@ -4,11 +4,10 @@ import { DeepPartial, getConnection } from 'typeorm';
 import { User } from '../entities/models/User';
 import { config } from 'dotenv';
 import { Action, NotFoundError, UnauthorizedError } from 'routing-controllers';
-import { HttpError } from 'koa';
 import { genSalt, hash } from 'bcryptjs';
 
 config()
-const { JWT_SECRET } = process.env
+const { redis_host, redis_port, JWT_secret, JWT_expiration_delay } = process.env
 
 export class AuthService {
 
@@ -16,11 +15,16 @@ export class AuthService {
     public jwtr: JWTR.default;
     
     constructor() {
-        console.log('Start AuthService'.underline);
+        console.log(`Start AuthService(expiration delay: ${JWT_expiration_delay})`.underline);
+
+        // reddis db init
         this.redisClient = redis.createClient({
-            host: "127.0.0.1",
-            port: 6379
+            host: redis_host, // default: "127.0.0.1",
+            port: +redis_port // default: 6379
         });
+        console.log(`Synchronize with DB: Redis://${redis_host}:${redis_port}`.bgGreen.bold);
+
+        // JWTR init
         this.jwtr = new JWTR.default(this.redisClient);
     }
 
@@ -39,22 +43,23 @@ export class AuthService {
                 return { ...user, accessToken: jwt } as User;   
             } else throw Error()
         } catch {
-            throw new UnauthorizedError(`wrong password for ${user.email}`)
+            throw new UnauthorizedError(`Error: wrong password for ${user.email}`)
         }
     }
 
     async generateJWT(user: DeepPartial<User>): Promise<string> {
         console.log(`--> AuthService.generateJWT(user)`.bgYellow);
-        return await this.jwtr.sign({...user}, JWT_SECRET);
+        console.log(`JST_expiration_delay=${JWT_expiration_delay}`);
+        return await this.jwtr.sign({ ...user }, JWT_secret, { expiresIn: JWT_expiration_delay });
     }
 
     async destroyJWT(token: string): Promise<boolean> {
         console.log(`-> AuthService.destroyJWT(token)`.bgYellow);
-        if (! token) throw new NotFoundError(`token session is not provided`);
+        if (! token) throw new NotFoundError(`Error: token session is not provided`);
         // retrieve generated tojen identifier
-        const {jti} =  this.jwtr.decode(token) as {jti};
+        const {jti} =  this.jwtr.decode(token) as {jti: string};
         // console.log(`jti: ${jti}`);
-        if (! await this.jwtr.destroy(jti)) throw new NotFoundError(`unknown token`);
+        if (! await this.jwtr.destroy(jti)) throw new NotFoundError(`Error: unknown token`);
         return true;
     }
 
@@ -67,12 +72,21 @@ export class AuthService {
         // console.log(`-> AuthService.authorizationChecker(action, profiles)`.bgYellow);
         const token = this.parseJWT(action.request.headers);
         try {
-            await this.jwtr.verify(token, JWT_SECRET);
-        } catch { throw new UnauthorizedError("Unauthorized access"); }
+            await this.jwtr.verify(token, JWT_secret);
+        // } catch { throw new UnauthorizedError("Unauthorized access"); }
+        } catch (error) { 
+            // console.log(error);
+            switch (error.name) {
+                case "TokenExpiredError":
+                    throw new UnauthorizedError("Error: Expired session");
+                default:
+                    throw new UnauthorizedError("Error: Unauthorized access");
+            }
+        }
         const decodedUser: DeepPartial<User> = this.decodeJWT(token);
         // console.log(`provided user email: ${decodedUser.email}`)
         const user = await getConnection().getRepository(User).findOneOrFail(decodedUser.id);
-        if (!user) throw new NotFoundError(`user not found`);
+        if (!user) throw new NotFoundError(`Error: user not found`);
         if (!profiles.length || (profiles.length && profiles.find(profile => user.profile == profile))) return true;
         return false;
     }
@@ -84,7 +98,7 @@ export class AuthService {
         // console.log(`provided user email: ${decodedUser.email}`)
         try { 
             return { ...await getConnection().getRepository(User).findOneOrFail(decodedUser.id), accessToken: token }; 
-        } catch { throw new NotFoundError(`user not found`); }
+        } catch { throw new NotFoundError(`Error: user not found`); }
     }
 
     async saltAndHashUser(user: DeepPartial<User>): Promise<DeepPartial<User>> {

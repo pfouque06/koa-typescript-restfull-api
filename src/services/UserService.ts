@@ -39,7 +39,7 @@ export class UserService extends BaseService<User> {
         try {
             user = await this.userRepository.getById(null, { email })
         } catch {
-            throw new NotFoundError(`user ${email} not found`)
+            throw new NotFoundError(`Error: user ${email} not found`)
         }
         
         // authenticate user with password from credentials
@@ -59,7 +59,7 @@ export class UserService extends BaseService<User> {
             // user = await this.userRepository.getById(null, { email })
             await this.userRepository.getById(null, { email })
         } catch {
-            throw new NotFoundError(`user ${email} not found`)
+            throw new NotFoundError(`Error: user ${email} not found`)
         }
 
         // destroy token
@@ -137,7 +137,7 @@ export class UserService extends BaseService<User> {
         try {
             await this.userRepository.existsById(id);
         } catch {
-            throw new NotFoundError(`user with id ${id} not found`);
+            throw new NotFoundError(`Error: user with id ${id} not found`);
         }
         
         const instance: DeepPartial<User> = await this.getValidatedUser(user, { groups: [UPDATE] });
@@ -151,7 +151,7 @@ export class UserService extends BaseService<User> {
         try {
             await this.userRepository.existsById(id);
         } catch {
-            throw new NotFoundError(`user with id ${id} not found`);
+            throw new NotFoundError(`Error: user with id ${id} not found`);
         }
 
         return this.userRepository.del(id);
