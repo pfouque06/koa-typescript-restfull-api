@@ -28,10 +28,11 @@ export class UserService extends BaseService<User> {
         console.log(`-> UserService.login(email: ${userCredentials.email})`.bgYellow);
         
         // user Credentials validation
-        const validationRes: Array<ValidationError> = await validate(userCredentials)
-        if (validationRes.length > 0) throw validationRes
+        // --> NOT NEEDED ANYMORE, processed in controller @Body({ validate: true }) userCredentials: LoginFor
+        // const validationRes: Array<ValidationError> = await validate(userCredentials)
+        // if (validationRes.length > 0) throw validationRes
         
-        // get required properties
+        // get required properties from validted user Credentials
         const { email, password } = userCredentials
         
         // find user by its email
@@ -51,7 +52,6 @@ export class UserService extends BaseService<User> {
         
         // get required properties
         const { email, accessToken } = currentUser
-        // console.log(currentUser, accessToken);
 
         // find user by its email without accessToken
         try {
@@ -98,7 +98,6 @@ export class UserService extends BaseService<User> {
     
     async getValidatedUser(user: DeepPartial<User>, validatorOptions?: ValidatorOptions): Promise<DeepPartial<User>> {
         console.log(`--> UserService.getValidatedUser(email: ${user.email})`.bgYellow);
-        // console.log(`User: `, user);
         
         // create new User instance
         let instance: DeepPartial<User> = this.userRepository.getInstance(user);
@@ -107,16 +106,12 @@ export class UserService extends BaseService<User> {
         const validationResult: Array<ValidationError> = await validate(instance, validatorOptions);
         if (validationResult.length > 0) throw validationResult.map(constraints => constraints);
         
-        // check email unicity already done in custom validator decorator : IsUniqueCustom
-        // if ( user.email && ! await this.isUnique(user.email)) throw `email ${user.email} is not unique`;
-        
         // salt and hash user instance
         instance = await this.authService.saltAndHashUser(instance);
         
         // reset birthDate since date format issue between mysql and validation constraint type for now
         if (user.birthDate) { instance.birthDate = undefined}
         
-        // console.log(`Instance: `, instance);
         return instance
     }
     
@@ -178,7 +173,6 @@ export class UserService extends BaseService<User> {
             // save instance
             if ( await this.userRepository.save(instance) == null) return false;
         }
-        // })
 
         // reset redis db also
         console.log(`flushing redis DB`.underline);

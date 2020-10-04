@@ -55,7 +55,7 @@ export class User extends BaseEntity {
     @IsDefined({ groups: [CREATE] })
     @IsOptional({ groups: [UPDATE] })
     @IsString()
-    @Length(8, 25)
+    @Length(5, 25)
     password!: string;
     
     // @Column({nullable: true, select: false}) //-> remove prop from find*** repository methods

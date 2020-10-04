@@ -13,7 +13,7 @@ export class UserController {
     }
     
     @Post('/login')
-    login(@Body() userCredentials: LoginForm): Promise<User> {
+    login(@Body({ validate: true }) userCredentials: LoginForm): Promise<User> {
         console.log(`-------------------------`.bgCyan);
         console.log(`POST /users/login`.bgCyan);
         return this.userService.login(userCredentials);
