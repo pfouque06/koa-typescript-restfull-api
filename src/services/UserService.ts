@@ -68,12 +68,7 @@ export class UserService extends BaseService<User> {
     
     async register(userCredentials: LoginForm): Promise<User> {
         console.log(`-> UserService.register(email: ${userCredentials.email})`.bgYellow);
-        
-        // get instance from user Credentials validation
-        const instance: DeepPartial<User> = await this.getValidatedUser({...userCredentials}, { groups: [CREATE] });
-        
-        // save instance
-        return await this.userRepository.save(instance);
+        return await this.create({...userCredentials});
     }
     
     async getAll():  Promise<Array<User>> {
