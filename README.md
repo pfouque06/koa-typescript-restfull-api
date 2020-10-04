@@ -42,81 +42,83 @@ login with user and store Bearer for user Authorization header:
 
 note: command lines to build up this project :
 
-### check if npm is installed
+##### check if npm is installed
 
-> npm --version
+> $ npm --version
 
-### init project with default properties
-> mkdir <project_dir>; cd <project_dir>
-> npm init -y
+##### init project with default properties
+> $ mkdir <project_dir>; cd <project_dir>  
+> $ npm init -y
 
-### init git and add remote repository if any (pfouque06/koa-typescript-restfull-api in my case)
-> git init
-> git remote origin git@github.com:pfouque06/koa-typescript-restfull-api.git
+##### init git and add remote repository if any (pfouque06/koa-typescript-restfull-api in my case)
+> $ git init  
+> $ git remote origin git@github.com:pfouque06/koa-typescript-restfull-api.git
 
-### install typescript and associated dependancies
-> npm i -D typescript ts-node ts-node-dev @types/node
+##### install typescript and associated dependancies
+> $ npm i -D typescript ts-node ts-node-dev @types/node  
 
-### install tooling
-> npm i dotenv  @types/dotenv colors moment
-> npm i -D @types/colors @types/moment
+##### install tooling
+> $ npm i dotenv  @types/dotenv colors moment  
+> $ npm i -D @types/colors @types/moment  
 
-### install ORM tools
-> npm i mysql  sqlite3 typeorm reflect-metadata class-validator class-transformer
-> npm i -D @types/colors @types/moment
+##### install ORM tools
+> $ npm i mysql  sqlite3 typeorm reflect-metadata class-validator class-transformer  
+> $ npm i -D @types/colors @types/moment  
 
-### install Dependancy Injection tools
-> npm i typedi
+##### install Dependancy Injection tools
+> $ npm i typedi  
 
-### install koa module and associated dependancies
-> npm i koa koa-bodyparser koa-router routing-controllers bcrypt jsonwebtoken
-> npm i -D @types/koa @types/koa-bodyparser @types/koa-router @types/bcrypt @types/jsonwebtoken
+##### install koa module and associated dependancies
+> $ npm i koa koa-bodyparser koa-router routing-controllers bcrypt jsonwebtoken  
+> $ npm i -D @types/koa @types/koa-bodyparser @types/koa-router @types/bcrypt @types/jsonwebtoken  
 
-### add following  in script section of package.json file and use npm command :
-> "dev": "ts-node-dev src/app.ts"
-> "build": "tsc --build",
-> "prod": "ts-node dist/app.js",
+##### add following  in script section of package.json file and use npm command :
+> "scripts": {  
+>   "dev": "ts-node-dev src/app.ts"  
+>   "build": "tsc --build",  
+>   "prod": "ts-node dist/app.js",  
+> }  
 
-### make tsconfig.json similar to 
-> {
->     "compilerOptions": {
->         "target": "es6",
->         "module": "commonjs",
->         "experimentalDecorators": true,
->         "emitDecoratorMetadata": true,
->         "outDir": "./dist",
->         // "strict": true,
->         // "esModuleInterop": true,
->     },
->     "include": ["./src/**/*"],
->     "exclude": ["node_modules", "__tests__/**/*"]
-> }
+##### make tsconfig.json similar to 
+> {  
+>     "compilerOptions": {  
+>         "target": "es6",  
+>         "module": "commonjs",  
+>         "experimentalDecorators": true,  
+>         "emitDecoratorMetadata": true,  
+>         "outDir": "./dist",  
+>         // "strict": true,  
+>         // "esModuleInterop": true,  
+>     },  
+>     "include": ["./src/**/*"],  
+>     "exclude": ["node_modules", "__tests__/**/*"]  
+> }  
 
-### use npm command to run application in dev mode:
-> npm run dev
+##### use npm command to run application in dev mode:
+> $ npm run dev
 
-### use npm command to build application for prod mode:
-> npm run build
+##### use npm command to build application for prod mode:
+> $ npm run build
 
-### use npm command to run application in prod mode:
-> npm run prod
+##### use npm command to run application in prod mode:
+> $ npm run prod
 
 ## next version of authorisation handle: jwt-redis (jswonwebtoken with redis for token destroy enablement)
 
-### install redis and jwt-redis
-> $ npm i redis jwt-redis
-> $ npm i -D @types/redis
+##### install redis and jwt-redis
+> $ npm i redis jwt-redis  
+> $ npm i -D @types/redis  
 
-### install redis on Debian
-> sudo apt install redis
+##### install redis on Debian
+> sudo apt install redis  
 > $ redis-cli
 
-### install redis on Synology Nas : select redis on packagecenter with SynoComunnity package Source :
-> Syno Community : http://packages.synocommunity.com
-> $ cd /var/packages/redis/target/bin
+##### install redis on Synology Nas : select redis on packagecenter with SynoComunnity package Source :
+> Syno Community : http://packages.synocommunity.com  
+> $ cd /var/packages/redis/target/bin  
 > $ ./redis-cli
 
-### check server via redis-cli
+##### check server via redis-cli
 > 127.0.0.1:6379> ping  
 > PONG  
 > 127.0.0.1:6379> info  
