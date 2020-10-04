@@ -37,10 +37,8 @@ tsc --build and ts-node are usde for production
 
 project is live at http://nodejs.koa-typescript-restfull-api.pfouque.fr:8080/
 login with user and store Bearer for user Authorization header: 
-> {
->   "email": "sam.va@gmail.com",
->   "password": "secret"
-> }
+> { "email": "sam.va@gmail.com", "password": "secret" }  
+> { "email": "jean.pile@gmail.com", "password": "secret" }  
 
 note: command lines to build up this project :
 
