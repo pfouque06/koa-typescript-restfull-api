@@ -15,21 +15,27 @@ The application rely on a local mysql or sqlite (for easier deployment) database
 
 Create .env file for static properties like this: 
 
-- mysql configuration :
+- mysql properties :
 > db_type=mysql  
 > db_host=localhost  
 > db_port=3306  
 > db_user=root  
 > db_pwd=<tbd>  
 > db_schema=koatypescript  
-> server_port=8080  
-> JWT_SECRET=<tbd>  
 
-- mysql configuration :
+- sqlite properties :
 > db_type=sqlite  
 > db_schema=./koa.db  
+
+- Authentication DB and JWT properties
+> redis_host=127.0.0.1  
+> redis_port=6379  
+> JWT_secret=secret  
+> JWT_expiration_delay=20s  
+
+- HTTP server properties
+> node_env=prod  
 > server_port=8080  
-> JWT_SECRET=<tbd>  
 
 ts-node-dev is used in development lifecycle. Use "npm run dev" command to start the application.
 

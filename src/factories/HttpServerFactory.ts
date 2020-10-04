@@ -8,7 +8,7 @@ import Container from 'typedi';
 import { AuthService } from '../services/AuthService';
 
 // load .env data
-config(); const {server_port } = process.env;
+config(); const {node_env, server_port } = process.env;
 
 export const httpServerFactory = async (): Promise<void> => {
 
@@ -17,7 +17,8 @@ export const httpServerFactory = async (): Promise<void> => {
     // Koa Server init
     const app: Koa = createKoaServer({ // or const app: Koa<DefaultState, DefaultContext> = new Koa();llers module
         controllers: controllers,
-        errorOverridingMap: {  name: "name", message: "message", stack: "" },
+        development: (node_env.toLowerCase() != "prod"),
+        // errorOverridingMap: { name: "name", message: "message", stack: "" }, // attemp to remove stack (name, message, stack)
         // authorizationChecker: async (): Promise<boolean> => {
         async authorizationChecker(action: Action, profiles: string[]): Promise<boolean> {
             // console.log(`@startApp.authorizationChecker(profiles: ${profiles})`.cyan);
@@ -64,6 +65,6 @@ export const httpServerFactory = async (): Promise<void> => {
     
     //////////////////////////////////////////////////////
     // start listener
-    app.listen(server_port).on('listening', () => console.log(`Server started on port = ${server_port}, test on http://localhost:${server_port}`.bgGreen.bold))
+    app.listen(server_port).on('listening', () => console.log(`Server started on port = ${server_port} [${node_env.toUpperCase()}], test on http://localhost:${server_port}`.bgGreen.bold))
     //////////////////////////////////////////////////////
 }
