@@ -6,7 +6,7 @@ additional modul plugin used for this application are :
 - typedi for dependancy injection in services
 - routing-controllers, koa-bodyparser for controllers
 - bcrypt for pasword hash and salt
-- jsonwebtoken for JWT handling
+- jsonwebtoken, jwt-redis, redis for JWT handling
 - colors for console log coloring
 - dotenv for hiding env properties
 - moment for better date type handling
@@ -102,6 +102,10 @@ note: command lines to build up this project :
 > npm run prod
 
 ## next version of authorisation handle: jwt-redis (jswonwebtoken with redis for token destroy enablement)
+
+### install redis and jwt-redis
+> $ npm i redis jwt-redis
+> $ npm i -D @types/redis
 
 ### install redis on Debian
 > sudo apt install redis
