@@ -117,12 +117,13 @@ note: command lines to build up this project :
 > $ ./redis-cli
 
 ### check server via redis-cli
-> 127.0.0.1:6379> ping
-> PONG
-> 127.0.0.1:6379> info
-> (..)
-> redis_version:5.0.7
-> process_id:1855
-> tcp_port:6379
-> 127.0.0.1:6379> exit
+> 127.0.0.1:6379> ping  
+> PONG  
+> 127.0.0.1:6379> info  
+> (..)  
+> redis_version:5.0.7  
+> process_id:1855  
+> tcp_port:6379  
+> 127.0.0.1:6379> exit  
+
 
