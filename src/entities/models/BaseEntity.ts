@@ -5,11 +5,11 @@ export class BaseEntity {
         default: null,
         type: 'datetime',
     })
-    createdDate: Date
+    createdDate!: Date
     
     @UpdateDateColumn({
         default: null,
         type: 'datetime',
     })
-    updatedDate: Date
+    updatedDate!: Date
 }

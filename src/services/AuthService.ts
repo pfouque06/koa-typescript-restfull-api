@@ -20,7 +20,7 @@ export class AuthService {
         // reddis db init
         this.redisClient = redis.createClient({
             host: redis_host, // default: "127.0.0.1",
-            port: +redis_port // default: 6379
+            port: Number(redis_port) // default: 6379
         });
         console.log(`Synchronize with DB: Redis://${redis_host}:${redis_port}`.bgGreen.bold);
 
@@ -32,7 +32,7 @@ export class AuthService {
         console.log(`-> AuthService.authenticateUser(password, user)`.bgYellow);
         // validate hash from password and user's salt
         try {
-            const hashedPass = await hash(password, user.salt)
+            const hashedPass = await hash(password, user.salt as string)
             if (hashedPass === user.password) {
                 delete user.password // unsafe to keep 
                 delete user.salt // unsafe to keep 
@@ -50,7 +50,7 @@ export class AuthService {
     async generateJWT(user: DeepPartial<User>): Promise<string> {
         console.log(`--> AuthService.generateJWT(user)`.bgYellow);
         console.log(`JST_expiration_delay=${JWT_expiration_delay}`);
-        return await this.jwtr.sign({ ...user }, JWT_secret, { expiresIn: JWT_expiration_delay });
+        return await this.jwtr.sign({ ...user }, JWT_secret as string, { expiresIn: JWT_expiration_delay });
     }
 
     async destroyJWT(token: string): Promise<boolean> {
@@ -72,7 +72,7 @@ export class AuthService {
         // console.log(`-> AuthService.authorizationChecker(action, profiles)`.bgYellow);
         const token = this.parseJWT(action.request.headers);
         try {
-            await this.jwtr.verify(token, JWT_secret);
+            await this.jwtr.verify(token, JWT_secret as string);
         // } catch { throw new UnauthorizedError("Unauthorized access"); }
         } catch (error) { 
             // console.log(error);

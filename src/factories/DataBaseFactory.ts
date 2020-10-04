@@ -25,7 +25,7 @@ export const DBconnection = async () : Promise<void> => {
             await createConnection({
                 type: "mysql",
                 host: db_host, // default: localhost
-                port: +db_port, // default: 3306
+                port: Number(db_port), // default: 3306
                 username: db_user,
                 password: db_pwd,
                 database: db_schema, // default: koatypescript
@@ -37,7 +37,7 @@ export const DBconnection = async () : Promise<void> => {
         case "sqlite": {
             await createConnection({
                 type: "sqlite",
-                database: db_schema, // default: ./koa.db
+                database: String(db_schema), // default: ./koa.db
                 entities: entities,
                 logging: ["schema", "info", "warn", "error", "log"],
             });

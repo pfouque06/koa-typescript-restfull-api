@@ -8,14 +8,14 @@ export class LoginForm {
     @IsEmail()
     // @IsString()
     // @IsUniqueCustom(User)
-    email: string
+    email!: string
     
     @IsDefined()
     @IsString()
     // @Length(5, 25)
     // @Exclude() // -> exclude prop from json on ouput
-    password: string
+    password!: string
 
     @IsOptional()
-    profile: UserProfile
+    profile!: UserProfile
 }

@@ -21,7 +21,7 @@ export abstract class BaseRepository<T> {
         return true;
     }
 
-    async getById(id: number, where?: ObjectLiteral): Promise<T> {
+    async getById(id: number | undefined, where?: ObjectLiteral): Promise<T> {
         if (where) {
             return await this.repo.findOneOrFail(id, { where });
         } else {
@@ -29,9 +29,8 @@ export abstract class BaseRepository<T> {
         }
     }
     
-    async create(data: DeepPartial<T>, entityAlreadyCreated?: DeepPartial<T>): Promise<T> {
-        const entity: DeepPartial<T> = entityAlreadyCreated || this.getInstance(data);
-        return await this.repo.save(entity);
+    async save(data: DeepPartial<T>): Promise<T> {
+        return await this.repo.save(data);
     }
     
     getInstance(data: DeepPartial<T>): DeepPartial<T> {
@@ -52,7 +51,7 @@ export abstract class BaseRepository<T> {
     // push data set function 
     async pushDataSet(users: Array<DeepPartial<T>>): Promise<boolean> {
         console.log(`-> BaseRepository.pushDataSet()`.bold);
-        users.forEach( async user => await this.create(null, user));
+        users.forEach( async user => await this.save(user));
         return true;
     }
 }

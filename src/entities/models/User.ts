@@ -11,60 +11,64 @@ export type UserProfile = 'admin' | 'user'
 export class User extends BaseEntity {
     
     @PrimaryGeneratedColumn()
-    @IsEmpty({always: true, message: 'please, do not provide ID value'})
-    id: number;
+    @IsEmpty({ always: true, message: 'please, do not provide ID value' })
+    id!: number;
     
     // @Column({name: 'first_name'})
-    @Column({nullable: true, default: 'none'})
+    // @Column({name: 'first_name'})
+
+    @Column({ nullable: true, default: 'none' })
     @IsOptional({ always: true })
     @IsString()
     @Length(2, 25)
     @ToLowerCaseCustom()
-    firstName: string
+    firstName!: string;
     
-    @Column({nullable: true, default: 'none'})
+    @Column({ nullable: true, default: 'none' })
     @IsOptional({ always: true })
-    @IsString() 
+    @IsString()
     @Length(2, 25)
     @ToLowerCaseCustom()
-    lastName: string
+    lastName!: string;
     
-    @Column({type: 'date', nullable: true})
+    @Column({ type: 'date', nullable: true })
     @IsOptional({ always: true })
     @IsDateStringCustom({ always: true }) // @IsDateString() --> replaced with custom validation decorator
-    birthDate: Date
-    // dateOfBirth: Date
+    birthDate!: Date;
     
-    @Column({nullable: true})
+    @Column({ nullable: true })
     @IsOptional()
     @IsPhoneNumber('zz')
-    mobile: string
+    mobile!: string;
     
-    @Column({unique: true, nullable: false})
+    @Column({ unique: true, nullable: false })
     @IsDefined({ groups: [CREATE] })
     @IsOptional({ groups: [UPDATE] })
-    @IsEmail( {}, { always: true }) // @IsEmail()
+    @IsEmail({}, { always: true }) // @IsEmail()
     @IsUniqueCustom(User, { always: true })
-    email: string
+    email!: string;
     
     // @Column({nullable: true, select: false}) //-> remove prop from find*** repository methods
-    @Column({nullable: false})
+
+    @Column({ nullable: false })
     @Exclude() // -> exclude prop from json on ouput
     @IsDefined({ groups: [CREATE] })
     @IsOptional({ groups: [UPDATE] })
     @IsString()
     @Length(8, 25)
-    password: string
+    password!: string;
     
     // @Column({nullable: true, select: false}) //-> remove prop from find*** repository methods
-    @Column({nullable: true})
+    // @Column({nullable: true, select: false}) //-> remove prop from find*** repository methods
+
+    @Column({ nullable: true })
     @Exclude() // -> exclude prop from json  on ouput
-    @IsEmpty({always: true, message: 'unknown prop!'})
-    salt: string
+    @IsEmpty({ always: true, message: 'unknown prop!' })
+    salt!: string;
     
-    @Column({nullable: true, default: 'user'})
+    @Column({ nullable: true, default: 'user' })
     @IsOptional({ always: true })
-    profile: UserProfile
+    profile!: UserProfile;
     
     accessToken?: string
     
@@ -72,6 +76,7 @@ export class User extends BaseEntity {
         onDelete: "CASCADE",
         onUpdate: "CASCADE"
     })
-    posts: Post[] // Array<Post>
+    posts!: Post[]; // Array<Post>
+ // Array<Post>
     
 }

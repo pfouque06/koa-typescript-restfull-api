@@ -1,0 +1,8 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Koa Typescript Restfull API",
+        "description": "This is a technical Demo for a restfull API server on node.js with typescript and Koa server."
+    }
+}

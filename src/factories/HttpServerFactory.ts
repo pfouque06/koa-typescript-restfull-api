@@ -6,6 +6,8 @@ import { controllers } from '../controllers';
 import Router = require('koa-router');
 import Container from 'typedi';
 import { AuthService } from '../services/AuthService';
+import { koaSwagger } from 'koa2-swagger-ui';
+import * as swaggeSpec from './swagger.json';
 
 // load .env data
 config(); const {node_env, server_port } = process.env;
@@ -17,7 +19,7 @@ export const httpServerFactory = async (): Promise<void> => {
     // Koa Server init
     const app: Koa = createKoaServer({ // or const app: Koa<DefaultState, DefaultContext> = new Koa();llers module
         controllers: controllers,
-        development: (node_env.toLowerCase() != "prod"),
+        development: (String(node_env).toLowerCase() != "prod"),
         // errorOverridingMap: { name: "name", message: "message", stack: "" }, // attemp to remove stack (name, message, stack)
         // authorizationChecker: async (): Promise<boolean> => {
         async authorizationChecker(action: Action, profiles: string[]): Promise<boolean> {
@@ -32,6 +34,19 @@ export const httpServerFactory = async (): Promise<void> => {
     // assign DBconnection reference to Koa
     app.context.db = getConnection();
     
+    // swagger init
+    app.use(
+        koaSwagger({
+            title: 'swagger', // page title
+            routePrefix: '/swagger', // host at /swagger instead of default /docs
+            swaggerOptions: {
+                spec: swaggeSpec,
+                // url: 'http://petstore.swagger.io/v2/swagger.json', // example path to json
+            },
+        })
+    );
+
+
     //////////////////////////////////////////////////////
     // demo for koa_router
     const router: Router = new Router();
@@ -65,6 +80,6 @@ export const httpServerFactory = async (): Promise<void> => {
     
     //////////////////////////////////////////////////////
     // start listener
-    app.listen(server_port).on('listening', () => console.log(`Server started on port = ${server_port} [${node_env.toUpperCase()}], test on http://localhost:${server_port}`.bgGreen.bold))
+    app.listen(server_port).on('listening', () => console.log(`Server started on port = ${server_port} [${String(node_env).toUpperCase()}], test on http://localhost:${server_port}`.bgGreen.bold))
     //////////////////////////////////////////////////////
 }

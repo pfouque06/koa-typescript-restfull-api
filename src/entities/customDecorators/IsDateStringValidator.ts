@@ -1,5 +1,6 @@
+import 'colors';
 import {registerDecorator, ValidationOptions, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface} from "class-validator";
-import * as moment from "moment";
+import moment from "moment";
 
 
 @ValidatorConstraint({ async: true })

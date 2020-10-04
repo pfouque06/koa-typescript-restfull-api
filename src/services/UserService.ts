@@ -37,7 +37,7 @@ export class UserService extends BaseService<User> {
         // find user by its email
         let user: Exclude<User, { accessToken: string }>
         try {
-            user = await this.userRepository.getById(null, { email })
+            user = await this.userRepository.getById(undefined, { email })
         } catch {
             throw new NotFoundError(`Error: user ${email} not found`)
         }
@@ -57,13 +57,13 @@ export class UserService extends BaseService<User> {
         try {
             // let user: Exclude<User, { accessToken: string }>
             // user = await this.userRepository.getById(null, { email })
-            await this.userRepository.getById(null, { email })
+            await this.userRepository.getById(undefined, { email })
         } catch {
             throw new NotFoundError(`Error: user ${email} not found`)
         }
 
         // destroy token
-        return await this.authService.destroyJWT(accessToken);
+        return await this.authService.destroyJWT(accessToken as string);
     }
     
     async register(userCredentials: LoginForm): Promise<User> {
@@ -73,7 +73,7 @@ export class UserService extends BaseService<User> {
         const instance: DeepPartial<User> = await this.getValidatedUser({...userCredentials}, { groups: [CREATE] });
         
         // save instance
-        return await this.userRepository.create(null, instance);
+        return await this.userRepository.save(instance);
     }
     
     async getAll():  Promise<Array<User>> {
@@ -89,7 +89,7 @@ export class UserService extends BaseService<User> {
     async isUnique(email: string): Promise<boolean> {
         console.log(`--> UserService.isUnique(email: ${email})`.bgYellow);
         try {
-            await this.userRepository.getById(null, { email });
+            await this.userRepository.getById(undefined, { email });
         } catch (error) {
             return true;
         }
@@ -114,7 +114,7 @@ export class UserService extends BaseService<User> {
         instance = await this.authService.saltAndHashUser(instance);
         
         // reset birthDate since date format issue between mysql and validation constraint type for now
-        if (user.birthDate) { instance.birthDate = null}
+        if (user.birthDate) { instance.birthDate = undefined}
         
         // console.log(`Instance: `, instance);
         return instance
@@ -122,8 +122,10 @@ export class UserService extends BaseService<User> {
     
     async create(user: DeepPartial<User>): Promise<User> {
         console.log(`-> UserService.create(email: ${user.email})`.bgYellow);
+        // create validated instance
         const instance: DeepPartial<User> = await this.getValidatedUser(user, { groups: [CREATE] });
-        return await this.userRepository.create(user, instance);
+        //save instance
+        return await this.userRepository.save(instance);
     }
     
     async update(id: number, user: DeepPartial<User>, currentUser: DeepPartial<User>): Promise<User> {
@@ -174,12 +176,13 @@ export class UserService extends BaseService<User> {
             // get validated instance
             const instance: DeepPartial<User> = await this.getValidatedUser({...userData}, { groups: [CREATE] });
             // save instance
-            if ( await this.userRepository.create(null, instance) == null) return false;
+            if ( await this.userRepository.save(instance) == null) return false;
         }
         // })
 
         // reset redis db also
         console.log(`flushing redis DB`.underline);
         this.authService.flushDB();
+        return true;
     }
 }

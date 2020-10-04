@@ -1,3 +1,4 @@
+import 'colors';
 import { registerDecorator, ValidationArguments, ValidationOptions } from "class-validator";
 import { getConnection } from "typeorm";
 
@@ -15,7 +16,7 @@ export function IsUniqueCustom(entityClass: Function, validationOptions?: Valida
                     // console.log(`--> IsUniqueCustom.validate(${entityClass.name}, { [${args.property}]: ${isUniqueValue} })`.bgBlue);
                     try {                  
                         // console.log(await getConnection().getRepository(entityClass).findOneOrFail(null, { where: { [args.property]: isUniqueValue }}));
-                        await getConnection().getRepository(entityClass).findOneOrFail(null, { where: { [args.property]: isUniqueValue }});
+                        await getConnection().getRepository(entityClass).findOneOrFail(undefined, { where: { [args.property]: isUniqueValue }});
                     } catch (error) {
                         // console.log(`\t${entityClass.name}.${args.property}: ${isUniqueValue} is unique`.green);
                         return true;
