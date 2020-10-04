@@ -1,4 +1,4 @@
-### koa-typescript-restfull-api
+## koa-typescript-restfull-api
 
 This is a technical Demo for a restfull API server on node.js with typescript and Koa server.
 additional modul plugin used for this application are :
@@ -44,34 +44,42 @@ login with user and store Bearer for user Authorization header:
 
 note: command lines to build up this project :
 
-> # check if npm is installed
+### check if npm is installed
+
 > npm --version
-> # init project with default properties
+
+### init project with default properties
 > mkdir <project_dir>; cd <project_dir>
 > npm init -y
-> # init git and add remote repository if any (pfouque06/koa-typescript-restfull-api in my case)
+
+### init git and add remote repository if any (pfouque06/koa-typescript-restfull-api in my case)
 > git init
 > git remote origin git@github.com:pfouque06/koa-typescript-restfull-api.git
-> # install typescript and associated dependancies
+
+### install typescript and associated dependancies
 > npm i -D typescript ts-node ts-node-dev @types/node
-> # install tooling
+
+### install tooling
 > npm i dotenv  @types/dotenv colors moment
 > npm i -D @types/colors @types/moment
-> # install ORM tools
+
+### install ORM tools
 > npm i mysql  sqlite3 typeorm reflect-metadata class-validator class-transformer
 > npm i -D @types/colors @types/moment
-> # install Dependancy Injection tools
+
+### install Dependancy Injection tools
 > npm i typedi
-> # install koa module and associated dependancies
+
+### install koa module and associated dependancies
 > npm i koa koa-bodyparser koa-router routing-controllers bcrypt jsonwebtoken
 > npm i -D @types/koa @types/koa-bodyparser @types/koa-router @types/bcrypt @types/jsonwebtoken
-> 
-> # add following  in script section of package.json file and use npm command :
+
+### add following  in script section of package.json file and use npm command :
 > "dev": "ts-node-dev src/app.ts"
 > "build": "tsc --build",
 > "prod": "ts-node dist/app.js",
->
-> # make tsconfig.json similar to 
+
+### make tsconfig.json similar to 
 > {
 >     "compilerOptions": {
 >         "target": "es6",
@@ -85,29 +93,28 @@ note: command lines to build up this project :
 >     "include": ["./src/**/*"],
 >     "exclude": ["node_modules", "__tests__/**/*"]
 > }
->
-> # use npm command to run application in dev mode:
+
+### use npm command to run application in dev mode:
 > npm run dev
-> 
-> # use npm command to build application for prod mode:
+
+### use npm command to build application for prod mode:
 > npm run build
-> 
-> # use npm command to run application in prod mode:
+
+### use npm command to run application in prod mode:
 > npm run prod
-> 
 
-# next level of authorisation : jwt-redis
+## next version of authorisation handle: jwt-redis (jswonwebtoken with redis for token destroy enablement)
 
-> # install redis on Debian 
+### install redis on Debian
 > sudo apt install redis
 > $ redis-cli
-> 
-> # install redis on Synology Nas : select redis on packagecenter with SynoComunnity package Source :
+
+### install redis on Synology Nas : select redis on packagecenter with SynoComunnity package Source :
 > Syno Community : http://packages.synocommunity.com
 > $ cd /var/packages/redis/target/bin
 > $ ./redis-cli
-> 
-> # check server via redis-cli
+
+### check server via redis-cli
 > 127.0.0.1:6379> ping
 > PONG
 > 127.0.0.1:6379> info
