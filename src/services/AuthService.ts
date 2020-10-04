@@ -70,13 +70,16 @@ export class AuthService {
 
     async authorizationChecker(action: Action, profiles: string[]): Promise<boolean> {
         // console.log(`-> AuthService.authorizationChecker(action, profiles)`.bgYellow);
-        const token = this.parseJWT(action.request.headers);
+        let token: string; 
         try {
+            token = this.parseJWT(action.request.headers);
             await this.jwtr.verify(token, JWT_secret as string);
         // } catch { throw new UnauthorizedError("Unauthorized access"); }
         } catch (error) { 
             // console.log(error);
             switch (error.name) {
+                case "TypeError":
+                    throw new UnauthorizedError("Error: session JWT not provided");
                 case "TokenExpiredError":
                     throw new UnauthorizedError("Error: Expired session");
                 default:
