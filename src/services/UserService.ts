@@ -1,9 +1,6 @@
-import { genSalt, hash } from 'bcryptjs';
 import { ValidationError, validate, ValidatorOptions } from 'class-validator';
-import { config } from 'dotenv';
-import { sign } from 'jsonwebtoken';
 import { NotFoundError, UnauthorizedError } from 'routing-controllers';
-import { Service } from 'typedi';
+import Container, { Service } from 'typedi';
 import { DeepPartial, ObjectLiteral } from "typeorm";
 import { CREATE, UPDATE } from '../entities/customDecorators';
 import { userDataSet } from '../entities/dataSet/userDataSet';
@@ -11,19 +8,19 @@ import { LoginForm } from '../entities/forms/LoginForm';
 import { User } from "../entities/models/User";
 import { UserRepository } from '../repositories/UserRepository';
 import { BaseService } from './BaseService';
-
-config()
-const { JWT_SECRET } = process.env
+import { AuthService } from './AuthService';
 
 @Service()
 export class UserService extends BaseService<User> {
     
     public userRepository: UserRepository;
+    public authService: AuthService;
     
     constructor() {
         console.log('Start UserService'.underline);
         super(new User()); // do nothing yet despite provide generic type for service uniqueness validation
         this.userRepository = new UserRepository();
+        this.authService = Container.get<AuthService>(AuthService);
         this.resetData(true);
     }
     
@@ -42,41 +39,31 @@ export class UserService extends BaseService<User> {
         try {
             user = await this.userRepository.getById(null, { email })
         } catch {
-            throw new NotFoundError(`user ${userCredentials.email} not found`)
+            throw new NotFoundError(`user ${email} not found`)
         }
         
-        // validate hash from password and user's salt
-        try {
-            const hashedPass = await hash(password, user.salt)
-            if (hashedPass === user.password) {
-                delete user.password // unsafe to keep 
-                delete user.salt // unsafe to keep 
-                // const jwt = sign(JSON.parse(JSON.stringify(user)), JWT_SECRET)
-                const jwt = sign({...user}, JWT_SECRET) // similar syntax
-                return { ...user, accessToken: jwt }
-            } else throw Error()
-        } catch {
-            throw new UnauthorizedError(`wrong password for ${userCredentials.email}`)
-        }
+        // authenticate user with password from credentials
+        return await this.authService.authenticateUser(password, user);
     }
     
     async logout(currentUser: DeepPartial<User>): Promise<boolean> {
         console.log(`-> UserService.logout(email: ${currentUser.email})`.bgYellow);
         
         // get required properties
-        const { email } = currentUser
+        const { email, accessToken } = currentUser
+        // console.log(currentUser, accessToken);
 
         // find user by its email without accessToken
-        let user: Exclude<User, { accessToken: string }>
         try {
-            user = await this.userRepository.getById(null, { email })
+            // let user: Exclude<User, { accessToken: string }>
+            // user = await this.userRepository.getById(null, { email })
+            await this.userRepository.getById(null, { email })
         } catch {
             throw new NotFoundError(`user ${email} not found`)
         }
 
-        // save user
-        await this.userRepository.create(null, { ...user, accessToken: "" });
-        return true;
+        // destroy token
+        return await this.authService.destroyJWT(accessToken);
     }
     
     async register(userCredentials: LoginForm): Promise<User> {
@@ -114,7 +101,7 @@ export class UserService extends BaseService<User> {
         // console.log(`User: `, user);
         
         // create new User instance
-        const instance: DeepPartial<User> = this.userRepository.getInstance(user);
+        let instance: DeepPartial<User> = this.userRepository.getInstance(user);
         
         // validation steps
         const validationResult: Array<ValidationError> = await validate(instance, validatorOptions);
@@ -123,16 +110,13 @@ export class UserService extends BaseService<User> {
         // check email unicity already done in custom validator decorator : IsUniqueCustom
         // if ( user.email && ! await this.isUnique(user.email)) throw `email ${user.email} is not unique`;
         
-        // generate salt & hash password with salt if any
-        if (instance.password) {
-            instance.salt = await genSalt();
-            instance.password = await hash(user.password || "", instance.salt);
-        }
+        // salt and hash user instance
+        instance = await this.authService.saltAndHashUser(instance);
         
         // reset birthDate since date format issue between mysql and validation constraint type for now
         if (user.birthDate) { instance.birthDate = null}
         
-        console.log(`Instance: `, instance);
+        // console.log(`Instance: `, instance);
         return instance
     }
     
@@ -184,7 +168,7 @@ export class UserService extends BaseService<User> {
         }
         
         // push data set
-        console.log(`-> push userDataSet`.bold);
+        console.log(`pushing userDataSet`.underline);
         // userDataSet.forEach( async userData => {
         for await (const userData of userDataSet) {
             // get validated instance
@@ -193,5 +177,9 @@ export class UserService extends BaseService<User> {
             if ( await this.userRepository.create(null, instance) == null) return false;
         }
         // })
+
+        // reset redis db also
+        console.log(`flushing redis DB`.underline);
+        this.authService.flushDB();
     }
 }

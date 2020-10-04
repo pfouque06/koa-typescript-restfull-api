@@ -33,8 +33,10 @@ export class UserRepository extends BaseRepository<User> {
             }
             case "sqlite": {
                 for await (const entity of userEntityNames) {
-                    const rawData = await db.query(`DELETE FROM ${entity};`); 
-                    // const rawData = await db.query(`DROP TABLE ${entity};`); 
+                    // delete from your_table;    
+                    // delete from sqlite_sequence where name='your_table';
+                    const rawData1 = await db.query(`DELETE FROM ${entity};`); 
+                    const rawData2 = await db.query(`DELETE FROM SQLITE_SEQUENCE WHERE NAME='${entity}';`); 
                 }
                 await db.query(`VACUUM;`); 
                 break;

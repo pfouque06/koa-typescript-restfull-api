@@ -88,4 +88,32 @@ note: command lines to build up this project :
 >
 > # use npm command to run application in dev mode:
 > npm run dev
+> 
+> # use npm command to build application for prod mode:
+> npm run build
+> 
+> # use npm command to run application in prod mode:
+> npm run prod
+> 
+
+# next level of authorisation : jwt-redis
+
+> # install redis on Debian 
+> sudo apt install redis
+> $ redis-cli
+> 
+> # install redis on Synology Nas : select redis on packagecenter with SynoComunnity package Source :
+> Syno Community : http://packages.synocommunity.com
+> $ cd /var/packages/redis/target/bin
+> $ ./redis-cli
+> 
+> # check server via redis-cli
+> 127.0.0.1:6379> ping
+> PONG
+> 127.0.0.1:6379> info
+> (..)
+> redis_version:5.0.7
+> process_id:1855
+> tcp_port:6379
+> 127.0.0.1:6379> exit
 
