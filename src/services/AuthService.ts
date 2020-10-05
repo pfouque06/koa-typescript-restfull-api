@@ -49,7 +49,6 @@ export class AuthService {
 
     async generateJWT(user: DeepPartial<User>): Promise<string> {
         console.log(`--> AuthService.generateJWT(user)`.bgYellow);
-        console.log(`JST_expiration_delay=${JWT_expiration_delay}`);
         return await this.jwtr.sign({ ...user }, JWT_secret as string, { expiresIn: JWT_expiration_delay });
     }
 

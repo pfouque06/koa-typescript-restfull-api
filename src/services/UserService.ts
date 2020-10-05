@@ -23,7 +23,12 @@ export class UserService extends BaseService<User> {
         this.authService = Container.get<AuthService>(AuthService);
         this.resetData(true);
     }
-    
+
+    async register(userCredentials: LoginForm): Promise<User> {
+        console.log(`-> UserService.register(email: ${userCredentials.email})`.bgYellow);
+        return await this.create({...userCredentials});
+    }
+
     async login(userCredentials: LoginForm): Promise<User> {
         console.log(`-> UserService.login(email: ${userCredentials.email})`.bgYellow);
         
@@ -64,11 +69,6 @@ export class UserService extends BaseService<User> {
 
         // destroy token
         return await this.authService.destroyJWT(accessToken as string);
-    }
-    
-    async register(userCredentials: LoginForm): Promise<User> {
-        console.log(`-> UserService.register(email: ${userCredentials.email})`.bgYellow);
-        return await this.create({...userCredentials});
     }
     
     async getAll():  Promise<Array<User>> {

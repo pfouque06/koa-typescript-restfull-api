@@ -12,6 +12,13 @@ export class UserController {
         console.log("Start UserController".underline);
     }
     
+    @Post('/register')
+    register(@Body() userCredentials: LoginForm): Promise<User> {
+        console.log(`-------------------------`.bgCyan);
+        console.log(`POST /users/register`.bgCyan);
+        return this.userService.register(userCredentials);
+    }
+    
     @Post('/login')
     login(@Body({ validate: true }) userCredentials: LoginForm): Promise<User> {
         console.log(`-------------------------`.bgCyan);
@@ -25,13 +32,6 @@ export class UserController {
         console.log(`-------------------------`.bgCyan);
         console.log(`POST /users/logout`.bgCyan);
         return this.userService.logout(currentUser);
-    }
-    
-    @Post('/register')
-    register(@Body() userCredentials: LoginForm): Promise<User> {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`POST /users/register`.bgCyan);
-        return this.userService.register(userCredentials);
     }
     
     @Get("/access")
