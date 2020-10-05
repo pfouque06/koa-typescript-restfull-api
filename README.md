@@ -41,7 +41,7 @@ ts-node-dev is used in development lifecycle. Use "npm run dev" command to start
 
 tsc --build and ts-node are usde for production
 
-project is live at http://nodejs.koa-typescript-restfull-api.pfouque.fr:8080/
+project is live at http://nodejs.koa-typescript-restfull-api.pfouque.fr:8080/swagger
 login with user and store Bearer for user Authorization header: 
 > { "email": "sam.va@gmail.com", "password": "secret" }  
 > { "email": "jean.pile@gmail.com", "password": "secret" }  
