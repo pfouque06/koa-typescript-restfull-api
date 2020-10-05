@@ -1,74 +1,24 @@
 import { ValidationError, validate, ValidatorOptions } from 'class-validator';
 import { NotFoundError, UnauthorizedError } from 'routing-controllers';
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 import { DeepPartial, ObjectLiteral } from "typeorm";
 import { CREATE, UPDATE } from '../entities/customDecorators';
 import { userDataSet } from '../entities/dataSet/userDataSet';
-import { LoginForm } from '../entities/forms/LoginForm';
 import { User } from "../entities/models/User";
 import { UserRepository } from '../repositories/UserRepository';
 import { BaseService } from './BaseService';
-import { AuthService } from './AuthService';
+import { genSalt, hash } from 'bcryptjs';
 
 @Service()
 export class UserService extends BaseService<User> {
     
     public userRepository: UserRepository;
-    public authService: AuthService;
     
     constructor() {
         console.log('Start UserService'.underline);
         super(new User()); // do nothing yet despite provide generic type for service uniqueness validation
         this.userRepository = new UserRepository();
-        this.authService = Container.get<AuthService>(AuthService);
         this.resetData(true);
-    }
-
-    async register(userCredentials: LoginForm): Promise<User> {
-        console.log(`-> UserService.register(email: ${userCredentials.email})`.bgYellow);
-        return await this.create({...userCredentials});
-    }
-
-    async login(userCredentials: LoginForm): Promise<User> {
-        console.log(`-> UserService.login(email: ${userCredentials.email})`.bgYellow);
-        
-        // user Credentials validation
-        // --> NOT NEEDED ANYMORE, processed in controller @Body({ validate: true }) userCredentials: LoginFor
-        // const validationRes: Array<ValidationError> = await validate(userCredentials)
-        // if (validationRes.length > 0) throw validationRes
-        
-        // get required properties from validted user Credentials
-        const { email, password } = userCredentials
-        
-        // find user by its email
-        let user: Exclude<User, { accessToken: string }>
-        try {
-            user = await this.userRepository.getById(undefined, { email })
-        } catch {
-            throw new NotFoundError(`Error: user ${email} not found`)
-        }
-        
-        // authenticate user with password from credentials
-        return await this.authService.authenticateUser(password, user);
-    }
-    
-    async logout(currentUser: DeepPartial<User>): Promise<boolean> {
-        console.log(`-> UserService.logout(email: ${currentUser.email})`.bgYellow);
-        
-        // get required properties
-        const { email, accessToken } = currentUser
-
-        // find user by its email without accessToken
-        try {
-            // let user: Exclude<User, { accessToken: string }>
-            // user = await this.userRepository.getById(null, { email })
-            await this.userRepository.getById(undefined, { email })
-        } catch {
-            throw new NotFoundError(`Error: user ${email} not found`)
-        }
-
-        // destroy token
-        return await this.authService.destroyJWT(accessToken as string);
     }
     
     async getAll():  Promise<Array<User>> {
@@ -81,6 +31,11 @@ export class UserService extends BaseService<User> {
         return await this.userRepository.getById(id, where);
     }
     
+    async getByMail(email: string): Promise<User> {
+        console.log(`-> UserService.getByMail(email: ${email})`.bgYellow);
+        return await this.userRepository.getById(undefined, { email });
+    }
+    
     async isUnique(email: string): Promise<boolean> {
         console.log(`--> UserService.isUnique(email: ${email})`.bgYellow);
         try {
@@ -89,6 +44,14 @@ export class UserService extends BaseService<User> {
             return true;
         }
         return false;
+    }
+    
+    async saltAndHashUser(user: DeepPartial<User>): Promise<DeepPartial<User>> {
+        if (user.password) {
+            user.salt = await genSalt();
+            user.password = await hash(user.password || "", user.salt);
+        }
+        return user;
     }
     
     async getValidatedUser(user: DeepPartial<User>, validatorOptions?: ValidatorOptions): Promise<DeepPartial<User>> {
@@ -102,7 +65,7 @@ export class UserService extends BaseService<User> {
         if (validationResult.length > 0) throw validationResult.map(constraints => constraints);
         
         // salt and hash user instance
-        instance = await this.authService.saltAndHashUser(instance);
+        instance = await this.saltAndHashUser(instance);
         
         // reset birthDate since date format issue between mysql and validation constraint type for now
         if (user.birthDate) { instance.birthDate = undefined}
@@ -111,7 +74,7 @@ export class UserService extends BaseService<User> {
     }
     
     async create(user: DeepPartial<User>): Promise<User> {
-        console.log(`-> UserService.create(email: ${user.email})`.bgYellow);
+        console.log(`-> UserService.create(body.email: ${user.email})`.bgYellow);
         // create validated instance
         const instance: DeepPartial<User> = await this.getValidatedUser(user, { groups: [CREATE] });
         //save instance
@@ -173,9 +136,9 @@ export class UserService extends BaseService<User> {
             if ( await this.userRepository.save(instance) == null) return false;
         }
 
-        // reset redis db also
-        console.log(`flushing redis DB`.underline);
-        this.authService.flushDB();
+        // // reset redis db also
+        // console.log(`flushing redis DB`.underline);
+        // this.authService.flushDB();
         return true;
     }
 }

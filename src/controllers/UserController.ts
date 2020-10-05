@@ -1,6 +1,5 @@
 import { Param, Body, Get,  Post, Put, Delete, JsonController,  Authorized, CurrentUser } from "routing-controllers";
 import { DeepPartial } from "typeorm";
-import { LoginForm } from "../entities/forms/LoginForm";
 import { User } from "../entities/models/User";
 import { UserService } from "../services/UserService";
 
@@ -10,60 +9,6 @@ export class UserController {
 
     constructor(private readonly userService: UserService) {
         console.log("Start UserController".underline);
-    }
-    
-    @Post('/register')
-    register(@Body() userCredentials: LoginForm): Promise<User> {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`POST /users/register`.bgCyan);
-        return this.userService.register(userCredentials);
-    }
-    
-    @Post('/login')
-    login(@Body({ validate: true }) userCredentials: LoginForm): Promise<User> {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`POST /users/login`.bgCyan);
-        return this.userService.login(userCredentials);
-    }
-    
-    @Post('/logout')
-    @Authorized()
-    logout(@CurrentUser() currentUser: DeepPartial<User>): Promise<boolean> {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`POST /users/logout`.bgCyan);
-        return this.userService.logout(currentUser);
-    }
-    
-    @Get("/access")
-    @Authorized()
-    access(@CurrentUser() user: DeepPartial<User>) {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`GET /users/access`.bgCyan);
-        return `TEST: access validated for ${user.email}`;
-    }
-    
-    @Get("/access/user")
-    @Authorized("user")
-    userAccess(@CurrentUser() user: DeepPartial<User>) {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`GET /users/access/user`.bgCyan);
-        return `TEST: user access validated for ${user.email}`;
-    }
-    
-    @Get("/access/admin")
-    @Authorized("admin")
-    adminAccess(@CurrentUser() user: DeepPartial<User>) {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`GET /users/access/admin`.bgCyan);
-        return `TEST: admin access validated for ${user.email}`;
-    }
-    
-    @Get("/access/test")
-    @Authorized(["admin", "user"])
-    allAccess(@CurrentUser() currentUser: DeepPartial<User>) {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`GET /users/access/test`.bgCyan);
-        return `TEST: access validated for ${currentUser.email} as ${currentUser.profile} `;
     }
     
     @Get()

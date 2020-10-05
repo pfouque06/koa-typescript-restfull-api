@@ -16,18 +16,22 @@
     "host": "localhost",
     "basePath": "",
     "schemes": ["https","http"],
-    "tags": [{
-        "name": "users",
-        "description": "Operations about user",
-        "externalDocs":{
-            "description": "Find out more about users",
-            "url": "https://github.com/pfouque06/koa-typescript-restfull-api"
+    "tags": [
+        {
+            "name": "hello",
+            "description": "Hello operation"
+        },{
+            "name": "auth",
+            "description": "Operations about authentication"
+        },{
+            "name": "users",
+            "description": "Operations about user"
         }
-    }],
+    ],
     "paths": {
         "": {
             "get":{
-                "tags": ["users"],
+                "tags": ["hello"],
                 "summary": "Hello",
                 "operationId": "Hello",
                 "security": [],
@@ -45,9 +49,9 @@
                 }
             }
         },
-        "/users/register": {
+        "/register": {
             "post":{
-                "tags": ["users"],
+                "tags": ["auth"],
                 "summary": "register a new user with its credentials (email, password)",
                 "operationId": "register",
                 "security": [],
@@ -99,9 +103,9 @@
                 }
             }
         },
-        "/users/login": {
+        "/login": {
             "post":{
-                "tags": ["users"],
+                "tags": ["auth"],
                 "summary": "login with user credentials: (email, password)",
                 "operationId": "login",
                 "security": [],
@@ -160,9 +164,9 @@
                 }
             }
         },
-        "/users/logout": {
+        "/logout": {
             "post":{
-                "tags": ["users"],
+                "tags": ["auth"],
                 "summary": "logout current User",
                 "operationId": "logout",
                 "produces": [
@@ -179,11 +183,30 @@
                 }
             }
         },
-        "/users/access/test": {
+        "/test": {
             "get":{
-                "tags": ["users"],
+                "tags": ["auth"],
                 "summary": "test api access of current User",
                 "operationId": "testUserAccess",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        },
+        "/reset": {
+            "post":{
+                "tags": ["auth"],
+                "summary": "reset JWT redis db",
+                "operationId": "resetRedis",
                 "produces": [
                     "application/json",
                     "application/xml"
@@ -415,7 +438,7 @@
         "/users/reset":{
             "post": {
                 "tags": ["users"],
-                "summary": "reset all table and JWT redis db",
+                "summary": "reset user and associaed tables",
                 "produces": [
                     "application/json",
                     "application/xml"
