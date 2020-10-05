@@ -3,6 +3,506 @@
     "info": {
         "version": "1.0.0",
         "title": "Koa Typescript Restfull API",
-        "description": "This is a technical Demo for a restfull API server on node.js with typescript and Koa server."
+        "description": "This is a technical Demo for a restfull API server on node.js with typescript and Koa server.",
+        "contact": {
+            "email": "pfouque@gmail.com"
+        }
+    },
+    "host": "localhost",
+    "basePath": "",
+    "schemes": ["https","http"],
+    "tags": [{
+        "name": "users",
+        "description": "Operations about user",
+        "externalDocs":{
+            "description": "Find out more about users",
+            "url": "https://github.com/pfouque06/koa-typescript-restfull-api"
+        }
+    }],
+    "paths": {
+        "": {
+            "get":{
+                "tags": ["users"],
+                "summary": "Hello",
+                "operationId": "Hello",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        },
+        "/users/register": {
+            "post":{
+                "tags": ["users"],
+                "summary": "register a new user with its credentials (email, password)",
+                "operationId": "register",
+                "requestBody": {
+                    "description": "user Credential: email, password",
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/LoginForm"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post":{
+                "tags": ["users"],
+                "summary": "login with user credentials: (email, password)",
+                "operationId": "login",
+                "requestBody": {
+                    "description": "user Credential: email, password",
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/LoginForm"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        },
+        "/users/logout": {
+            "post":{
+                "tags": ["users"],
+                "summary": "logout current User",
+                "operationId": "logout",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": "true",
+                        "description": "JWT token ",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        },
+        "/users/access/test": {
+            "get":{
+                "tags": ["users"],
+                "summary": "test api access of current User",
+                "operationId": "testUserAccess",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": "true",
+                        "description": "JWT token ",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        },
+        "/users":{
+            "get":{
+                "tags": ["users"],
+                "summary": "Get all users",
+                "description": "Restricted to logged user.",
+                "operationId": "getUsers",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": "true",
+                        "description": "JWT token ",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": {
+                    "bearerAuth": []
+                },
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/User"
+                                    }
+                                }
+                            }
+                        }
+
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["users"],
+                "summary": "create a new user",
+                "operationId": "postUser",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": "true",
+                        "description": "JWT token ",
+                        "schema": {
+                            "type": "string",
+                            "format": "string"
+                        }
+                    }
+                ],
+                "security": {
+                    "bearerAuth": []
+                },
+                "requestBody": {
+                    "description": "user Type: email, password are required",
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        },
+        "/users/{id}":{
+            "get":{
+                "tags": ["users"],
+                "summary": "Get specific user by its id",
+                "description": "Restricted to logged user.",
+                "operationId": "getUserById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": "true",
+                        "description": "id of user",
+                        "schema": {
+                            "type": "number",
+                            "minimum": "1"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": "true",
+                        "description": "JWT token ",
+                        "schema": {
+                            "type": "string",
+                            "format": "string"
+                        }
+                    }
+                ],
+                "security": {
+                    "bearerAuth": []
+                },
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            },
+            "put": {
+                "tags": ["users"],
+                "summary": "update a user",
+                "operationId": "putUserById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": "true",
+                        "description": "id of user",
+                        "schema": {
+                            "type": "number",
+                            "minimum": "1"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": "true",
+                        "description": "JWT token ",
+                        "schema": {
+                            "type": "string",
+                            "format": "string"
+                        }
+                    }
+                ],
+                "security": {
+                    "bearerAuth": []
+                },
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["users"],
+                "summary": "delete a user",
+                "operationId": "delUserById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": "true",
+                        "description": "id of user",
+                        "schema": {
+                            "type": "number",
+                            "minimum": "1"
+                        }
+                    },
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": "true",
+                        "description": "JWT token ",
+                        "schema": {
+                            "type": "string",
+                            "format": "string"
+                        }
+                    }
+                ],
+                "security": {
+                    "bearerAuth": []
+                },
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        },
+        "/users/reset":{
+            "post": {
+                "tags": ["users"],
+                "summary": "reset all table and JWT redis db",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "required": "true",
+                        "description": "JWT token ",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Invalid username/password supplied"
+                    }
+                }
+            }
+        }
+    },
+    "definitions" : {
+        "User": {
+            "type": "object",
+            "required": [ "email", "password" ],
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "firstName":{
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "birthDate": {
+                    "type": "string"
+                },
+                "mobile": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "profile": {
+                    "type": "string",
+                    "enum": ["available", "pending"]
+                }
+            }
+        },
+        "LoginForm": {
+            "type": "object",
+            "required": [ "email", "password" ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT" 
+            }
+        }
+    },
+    "security": {
+        "bearerAuth": [] 
     }
 }
