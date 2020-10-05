@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import * as Koa from 'koa';
-import { Action, createKoaServer } from "routing-controllers";
+import { Action, createKoaServer, useContainer } from "routing-controllers";
 import { getConnection } from "typeorm";
 import { controllers } from '../controllers';
 import Router = require('koa-router');
@@ -13,8 +13,11 @@ import * as swaggeSpec from './swagger.json';
 config(); const {node_env, server_port } = process.env;
 
 export const httpServerFactory = async (): Promise<void> => {
-
+    
     const authService: AuthService = Container.get<AuthService>(AuthService);
+
+    // declare services to controllers with routing-controllers module
+    useContainer(Container);
 
     // Koa Server init
     const app: Koa = createKoaServer({ // or const app: Koa<DefaultState, DefaultContext> = new Koa();llers module

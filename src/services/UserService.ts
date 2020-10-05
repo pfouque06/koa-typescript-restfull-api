@@ -18,7 +18,7 @@ export class UserService extends BaseService<User> {
         console.log('Start UserService'.underline);
         super(new User()); // do nothing yet despite provide generic type for service uniqueness validation
         this.userRepository = new UserRepository();
-        this.resetData(true);
+        // this.resetData(true);
     }
     
     async getAll():  Promise<Array<User>> {

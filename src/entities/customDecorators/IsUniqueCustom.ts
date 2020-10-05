@@ -3,7 +3,7 @@ import { registerDecorator, ValidationArguments, ValidationOptions } from "class
 import { getConnection } from "typeorm";
 
 export function IsUniqueCustom(entityClass: Function, validationOptions?: ValidationOptions) {
-    console.log(`@IsUniqueCustom(${entityClass.name}) initialized`.underline);
+    // console.log(`@IsUniqueCustom(${entityClass.name}) initialized`.underline);
     return (object: Object, propertyName: string) => {
         registerDecorator({
             name: "IsUniqueCustom",
