@@ -123,7 +123,11 @@ export class UserService extends BaseService<User> {
         
         // check id versus own id if current is user profile
         if (currentUser.profile == 'user' && id != currentUser.id)
-        throw new UnauthorizedError(`Operation not allowed on other users than yourself`);
+            throw new UnauthorizedError(`Operation not allowed on other users than yourself`);
+        
+        // only admin user can set profile to admin
+        if (user.profile == "admin" && currentUser.profile != "admin")
+            throw new UnauthorizedError(`Operation not allowed for user profile`);
 
         // validate id
         try {
