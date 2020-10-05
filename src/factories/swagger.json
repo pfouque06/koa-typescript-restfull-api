@@ -25,6 +25,7 @@
                 "tags": ["users"],
                 "summary": "Hello",
                 "operationId": "Hello",
+                "security": [],
                 "produces": [
                     "application/json",
                     "application/xml"
@@ -44,6 +45,7 @@
                 "tags": ["users"],
                 "summary": "register a new user with its credentials (email, password)",
                 "operationId": "register",
+                "security": [],
                 "requestBody": {
                     "description": "user Credential: email, password",
                     "required": "true",
@@ -51,6 +53,22 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/definitions/LoginForm"
+                            },
+                            "examples": {
+                                "Sam Plai": {
+                                    "summary": "credentials for user Sam Plai",
+                                    "value": {
+                                        "email": "sam.plai@gmail.com",
+                                        "password": "secret"
+                                    }
+                                },
+                                "Sam Bote": {
+                                    "summary": "credentials for user Sam Bote",
+                                    "value": {
+                                        "email": "sam.bote@gmail.com",
+                                        "password": "secret"
+                                    }
+                                }
                             }
                         }
                     }
@@ -81,6 +99,7 @@
                 "tags": ["users"],
                 "summary": "login with user credentials: (email, password)",
                 "operationId": "login",
+                "security": [],
                 "requestBody": {
                     "description": "user Credential: email, password",
                     "required": "true",
@@ -88,6 +107,29 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/definitions/LoginForm"
+                            },
+                            "examples": {
+                                "admin account": {
+                                    "summary": "credentials for admin Sam Va",
+                                    "value": {
+                                        "email": "sam.va@gmail.com",
+                                        "password": "secret"
+                                    }
+                                },
+                                "Sam Plai": {
+                                    "summary": "credentials for user Sam Plai",
+                                    "value": {
+                                        "email": "sam.plai@gmail.com",
+                                        "password": "secret"
+                                    }
+                                },
+                                "Sam Bote": {
+                                    "summary": "credentials for user Sam Bote",
+                                    "value": {
+                                        "email": "sam.bote@gmail.com",
+                                        "password": "secret"
+                                    }
+                                }
                             }
                         }
                     }
@@ -118,17 +160,6 @@
                 "tags": ["users"],
                 "summary": "logout current User",
                 "operationId": "logout",
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "Authorization",
-                        "required": "true",
-                        "description": "JWT token ",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "produces": [
                     "application/json",
                     "application/xml"
@@ -148,17 +179,6 @@
                 "tags": ["users"],
                 "summary": "test api access of current User",
                 "operationId": "testUserAccess",
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "Authorization",
-                        "required": "true",
-                        "description": "JWT token ",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "produces": [
                     "application/json",
                     "application/xml"
@@ -179,20 +199,6 @@
                 "summary": "Get all users",
                 "description": "Restricted to logged user.",
                 "operationId": "getUsers",
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "Authorization",
-                        "required": "true",
-                        "description": "JWT token ",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "security": {
-                    "bearerAuth": []
-                },
                 "produces": [
                     "application/json",
                     "application/xml"
@@ -221,21 +227,6 @@
                 "tags": ["users"],
                 "summary": "create a new user",
                 "operationId": "postUser",
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "Authorization",
-                        "required": "true",
-                        "description": "JWT token ",
-                        "schema": {
-                            "type": "string",
-                            "format": "string"
-                        }
-                    }
-                ],
-                "security": {
-                    "bearerAuth": []
-                },
                 "requestBody": {
                     "description": "user Type: email, password are required",
                     "required": "true",
@@ -243,6 +234,19 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/definitions/User"
+                            },
+                            "examples": {
+                                "user account example": {
+                                    "summary": "credentials for user Sam Plai",
+                                    "value": {
+                                        "profile": "user",
+                                        "firstName": "Sam",
+                                        "lastName": "Plai",
+                                        "mobile": "0123456789",
+                                        "email": "sam.plai@gmail.com",
+                                        "password": "secret"
+                                    }
+                                }
                             }
                         }
                     }
@@ -284,21 +288,8 @@
                             "type": "number",
                             "minimum": "1"
                         }
-                    },
-                    {
-                        "in": "header",
-                        "name": "Authorization",
-                        "required": "true",
-                        "description": "JWT token ",
-                        "schema": {
-                            "type": "string",
-                            "format": "string"
-                        }
                     }
                 ],
-                "security": {
-                    "bearerAuth": []
-                },
                 "produces": [
                     "application/json",
                     "application/xml"
@@ -333,20 +324,31 @@
                             "type": "number",
                             "minimum": "1"
                         }
-                    },
-                    {
-                        "in": "header",
-                        "name": "Authorization",
-                        "required": "true",
-                        "description": "JWT token ",
-                        "schema": {
-                            "type": "string",
-                            "format": "string"
-                        }
                     }
                 ],
-                "security": {
-                    "bearerAuth": []
+                "requestBody": {
+                    "description": "user Type: email, password are required",
+                    "required": "true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/User"
+                            },
+                            "examples": {
+                                "Sam Plai": {
+                                    "summary": "credentials for user Sam Plai",
+                                    "value": {
+                                        "profile": "user",
+                                        "firstName": "Sam",
+                                        "lastName": "Plai",
+                                        "mobile": "0123456789",
+                                        "email": "sam.plai@gmail.com",
+                                        "password": "secret"
+                                    }
+                                }
+                            }
+                        }
+                    }
                 },
                 "produces": [
                     "application/json",
@@ -382,21 +384,8 @@
                             "type": "number",
                             "minimum": "1"
                         }
-                    },
-                    {
-                        "in": "header",
-                        "name": "Authorization",
-                        "required": "true",
-                        "description": "JWT token ",
-                        "schema": {
-                            "type": "string",
-                            "format": "string"
-                        }
                     }
                 ],
-                "security": {
-                    "bearerAuth": []
-                },
                 "produces": [
                     "application/json",
                     "application/xml"
@@ -422,17 +411,6 @@
             "post": {
                 "tags": ["users"],
                 "summary": "reset all table and JWT redis db",
-                "parameters": [
-                    {
-                        "in": "header",
-                        "name": "Authorization",
-                        "required": "true",
-                        "description": "JWT token ",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "produces": [
                     "application/json",
                     "application/xml"
@@ -476,7 +454,7 @@
                 },
                 "profile": {
                     "type": "string",
-                    "enum": ["available", "pending"]
+                    "enum": ["user", "admin"]
                 }
             }
         },
@@ -496,13 +474,15 @@
     "components": {
         "securitySchemes": {
             "bearerAuth": {
+                "description": "JWT Authorization",
                 "type": "http",
                 "scheme": "bearer",
+                "in": "in",
                 "bearerFormat": "JWT" 
             }
         }
     },
-    "security": {
-        "bearerAuth": [] 
-    }
+    "security": [
+        { "bearerAuth": [] }
+    ]
 }
