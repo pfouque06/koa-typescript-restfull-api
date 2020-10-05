@@ -53,8 +53,8 @@ export const httpServerFactory = async (): Promise<void> => {
 
     // Cascading process with next() method
     router.get('/', async (ctx, next) => { // or router.get('/', async (ctx: ParameterizedContext<DefaultState, DefaultContext>, next) => {
-        console.log(`-------------------------`);
-        console.log(`------- HELLO -----------`);
+        console.log(`--------------------------------------------------`.bgCyan);
+        console.log(`${new Date().toISOString()} HELLO service`.bgCyan);
         await next();
         ctx.body= 'Hello buddy';
         console.log('finally ', ctx.body);

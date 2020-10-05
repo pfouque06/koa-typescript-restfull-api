@@ -14,39 +14,39 @@ export class AuthController {
     
     @Post('/register')
     register(@Body() userCredentials: LoginForm): Promise<User> {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`POST /users/register`.bgCyan);
+        console.log(`--------------------------------------------------`.bgCyan);
+        console.log(`${new Date().toISOString()} POST /users/register`.bgCyan); //Date.parse("YYYY-MM-DDTHH:mm:ss")
         return this.authService.register(userCredentials);
     }
     
     @Post('/login')
     login(@Body({ validate: true }) userCredentials: LoginForm): Promise<User> {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`POST /users/login`.bgCyan);
+        console.log(`--------------------------------------------------`.bgCyan);
+        console.log(`${new Date().toISOString()} POST /users/login`.bgCyan);
         return this.authService.login(userCredentials);
     }
     
     @Post('/logout')
     @Authorized()
     logout(@CurrentUser() currentUser: DeepPartial<User>): Promise<boolean> {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`POST /users/logout`.bgCyan);
+        console.log(`--------------------------------------------------`.bgCyan);
+        console.log(`${new Date().toISOString()} POST /users/logout`.bgCyan);
         return this.authService.logout(currentUser);
     }
     
     @Get("/test")
     @Authorized(["admin", "user"])
     allAccess(@CurrentUser() currentUser: DeepPartial<User>) {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`GET /test`.bgCyan);
+        console.log(`--------------------------------------------------`.bgCyan);
+        console.log(`${new Date().toISOString()} GET /test`.bgCyan);
         return `TEST: access validated for ${currentUser.email} as ${currentUser.profile} `;
     }
 
     @Post('/reset')
     @Authorized("admin")
     resetData() {
-        console.log(`-------------------------`.bgCyan);
-        console.log(`POST /reset`.bgCyan);
+        console.log(`--------------------------------------------------`.bgCyan);
+        console.log(`${new Date().toISOString()} POST /reset`.bgCyan);
         if (!this.authService.resetData()) return 'KO';
         return 'OK'
     }
