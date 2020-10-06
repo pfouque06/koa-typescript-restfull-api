@@ -8,6 +8,7 @@ import Container from 'typedi';
 import { AuthService } from '../services/AuthService';
 import { koaSwagger } from 'koa2-swagger-ui';
 import * as swaggeSpec from './swagger.json';
+import { Logger } from './Logger';
 
 // load .env data
 config(); const {node_env, server_port } = process.env;
@@ -57,7 +58,7 @@ export const httpServerFactory = async (): Promise<void> => {
     // Cascading process with next() method
     router.get('/', async (ctx, next) => { // or router.get('/', async (ctx: ParameterizedContext<DefaultState, DefaultContext>, next) => {
         console.log(`--------------------------------------------------`.bgCyan);
-        console.log(`${new Date().toISOString()} HELLO service`.bgCyan);
+        console.log(`${Logger.isoDate()} HELLO service`.bgCyan);
         await next();
         ctx.body= 'Hello buddy';
         console.log('finally ', ctx.body);

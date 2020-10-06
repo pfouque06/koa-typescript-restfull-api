@@ -2,6 +2,7 @@ import { Body, Get,  Post, JsonController,  Authorized, CurrentUser } from "rout
 import { DeepPartial } from "typeorm";
 import { LoginForm } from "../entities/forms/LoginForm";
 import { User } from "../entities/models/User";
+import { Logger } from "../factories/Logger";
 import { AuthService } from "../services/AuthService";
 
 // @Controller()
@@ -15,14 +16,14 @@ export class AuthController {
     @Post('/register')
     register(@Body() userCredentials: LoginForm): Promise<User> {
         console.log(`--------------------------------------------------`.bgCyan);
-        console.log(`${new Date().toISOString()} POST /users/register`.bgCyan); //Date.parse("YYYY-MM-DDTHH:mm:ss")
+        console.log(`${Logger.isoDate()} POST /users/register`.bgCyan); //Date.parse("YYYY-MM-DDTHH:mm:ss")
         return this.authService.register(userCredentials);
     }
     
     @Post('/login')
     login(@Body({ validate: true }) userCredentials: LoginForm): Promise<User> {
         console.log(`--------------------------------------------------`.bgCyan);
-        console.log(`${new Date().toISOString()} POST /users/login`.bgCyan);
+        console.log(`${Logger.isoDate()} POST /users/login`.bgCyan);
         return this.authService.login(userCredentials);
     }
     
@@ -30,7 +31,7 @@ export class AuthController {
     @Authorized()
     logout(@CurrentUser() currentUser: DeepPartial<User>): Promise<boolean> {
         console.log(`--------------------------------------------------`.bgCyan);
-        console.log(`${new Date().toISOString()} POST /users/logout`.bgCyan);
+        console.log(`${Logger.isoDate()} POST /users/logout`.bgCyan);
         return this.authService.logout(currentUser);
     }
     
@@ -38,7 +39,7 @@ export class AuthController {
     @Authorized(["admin", "user"])
     allAccess(@CurrentUser() currentUser: DeepPartial<User>) {
         console.log(`--------------------------------------------------`.bgCyan);
-        console.log(`${new Date().toISOString()} GET /test`.bgCyan);
+        console.log(`${Logger.isoDate()} GET /test`.bgCyan);
         return `TEST: access validated for ${currentUser.email} as ${currentUser.profile} `;
     }
 
@@ -46,7 +47,7 @@ export class AuthController {
     @Authorized("admin")
     resetData() {
         console.log(`--------------------------------------------------`.bgCyan);
-        console.log(`${new Date().toISOString()} POST /reset`.bgCyan);
+        console.log(`${Logger.isoDate()} POST /reset`.bgCyan);
         if (!this.authService.resetData()) return 'KO';
         return 'OK'
     }

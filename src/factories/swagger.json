@@ -61,7 +61,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/LoginForm"
+                                "$ref": "#/components/LoginForm"
                             },
                             "examples": {
                                 "Sam Plai": {
@@ -92,7 +92,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/User"
+                                    "$ref": "#/components/User"
                                 }
                             }
                         }
@@ -115,7 +115,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/LoginForm"
+                                "$ref": "#/components/LoginForm"
                             },
                             "examples": {
                                 "admin account": {
@@ -153,7 +153,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/User"
+                                    "$ref": "#/components/User"
                                 }
                             }
                         }
@@ -239,7 +239,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/definitions/User"
+                                        "$ref": "#/components/User"
                                     }
                                 }
                             }
@@ -261,7 +261,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/User"
+                                "$ref": "#/components/User"
                             },
                             "examples": {
                                 "user account example": {
@@ -289,7 +289,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/User"
+                                    "$ref": "#/components/User"
                                 }
                             }
                         }
@@ -328,7 +328,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/User"
+                                    "$ref": "#/components/User"
                                 }
                             }
                         }
@@ -360,7 +360,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/User"
+                                "$ref": "#/components/User"
                             },
                             "examples": {
                                 "Sam Plai": {
@@ -388,7 +388,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/User"
+                                    "$ref": "#/components/User"
                                 }
                             }
                         }
@@ -424,7 +424,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/User"
+                                    "$ref": "#/components/User"
                                 }
                             }
                         }
@@ -455,49 +455,7 @@
         }
     },
     "definitions" : {
-        "User": {
-            "type": "object",
-            "required": [ "email", "password" ],
-            "properties": {
-                "id": {
-                    "type": "number"
-                },
-                "firstName":{
-                    "type": "string"
-                },
-                "lastName": {
-                    "type": "string"
-                },
-                "birthDate": {
-                    "type": "string"
-                },
-                "mobile": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "profile": {
-                    "type": "string",
-                    "enum": ["user", "admin"]
-                }
-            }
-        },
-        "LoginForm": {
-            "type": "object",
-            "required": [ "email", "password" ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        }
+
     },
     "components": {
         "securitySchemes": {
@@ -507,6 +465,51 @@
                 "scheme": "bearer",
                 "in": "in",
                 "bearerFormat": "JWT" 
+            }
+        },
+        "schemas": {
+            "User": {
+                "type": "object",
+                "required": [ "email", "password" ],
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "firstName":{
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "birthDate": {
+                        "type": "string"
+                    },
+                    "mobile": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "profile": {
+                        "type": "string",
+                        "enum": ["user", "admin"]
+                    }
+                }
+            },
+            "LoginForm": {
+                "type": "object",
+                "required": [ "email", "password" ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
             }
         }
     },
