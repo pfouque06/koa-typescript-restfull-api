@@ -16,7 +16,7 @@ config(); const {node_env, server_port } = process.env;
 export class HttpServerFactory {
 
     public static async init (): Promise<void> {
-        console.log(`${new Date().toISOString()} HttpServerFactory.init()`.bgBlack.white);
+        console.log(`${Logger.isoDate()} HttpServerFactory.init()`.bgBlack.white);
 
         const authService: AuthService = Container.get<AuthService>(AuthService);
     

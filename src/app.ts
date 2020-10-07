@@ -1,9 +1,10 @@
 import 'colors';
 import { DataBaseFactory, RestfullFactory, HttpServerFactory } from './factories';
+import { Logger } from './factories/Logger';
 
 const startApp = async () => {
     console.log(`--------------------------------------------------`);
-    console.log(`${new Date().toISOString()} startApp()`.bgBlack.white);
+    console.log(`${Logger.isoDate()} startApp()`.bgBlack.white);
     
     // DB Factory
     await DataBaseFactory.init();

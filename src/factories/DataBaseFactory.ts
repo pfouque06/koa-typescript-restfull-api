@@ -2,6 +2,7 @@ import { createConnection, getConnection } from 'typeorm';
 import { config } from 'dotenv';
 import 'reflect-metadata';
 import { entities } from '../entities/models'
+import { Logger } from './Logger';
 
 //////////////////////////////////////////////////////
 // DB Factory
@@ -21,7 +22,7 @@ export class DataBaseFactory {
 
     // DB connection & entities init with typeorm module
     public static async init() : Promise<void> {
-        console.log(`${new Date().toISOString()} DataBaseFactory.init()`.bgBlack.white);
+        console.log(`${Logger.isoDate()} DataBaseFactory.init()`.bgBlack.white);
 
         switch (db_type) {
             case "mysql": {

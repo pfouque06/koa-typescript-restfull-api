@@ -1,6 +1,7 @@
 import { services } from "../services"
 import Container from "typedi"
 import { UserService } from "../services/UserService"
+import { Logger } from "./Logger";
 
 //////////////////////////////////////////////////////
 // RESTFULL factory : Controllers, Services & Repository
@@ -8,7 +9,7 @@ import { UserService } from "../services/UserService"
 export class RestfullFactory {
 
     public static async init(): Promise<void> {
-        console.log(`${new Date().toISOString()} RestfullFactory.init()`.bgBlack.white);
+        console.log(`${Logger.isoDate()} RestfullFactory.init()`.bgBlack.white);
 
         // declare Services & Repository with typedi module
         services.forEach( (service) => {
