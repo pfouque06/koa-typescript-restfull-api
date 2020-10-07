@@ -61,7 +61,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/LoginForm"
+                                "$ref": "#/components/schemas/LoginForm"
                             },
                             "examples": {
                                 "Sam Plai": {
@@ -92,7 +92,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/User"
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }
@@ -115,7 +115,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/LoginForm"
+                                "$ref": "#/components/schemas/LoginForm"
                             },
                             "examples": {
                                 "admin account": {
@@ -153,7 +153,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/User"
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }
@@ -239,7 +239,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/User"
+                                        "$ref": "#/components/schemas/User"
                                     }
                                 }
                             }
@@ -261,7 +261,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/User"
+                                "$ref": "#/components/schemas/User"
                             },
                             "examples": {
                                 "user account example": {
@@ -289,7 +289,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/User"
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }
@@ -328,7 +328,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/User"
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }
@@ -360,7 +360,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/User"
+                                "$ref": "#/components/schemas/User"
                             },
                             "examples": {
                                 "Sam Plai": {
@@ -388,7 +388,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/User"
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }
@@ -424,7 +424,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/User"
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }
