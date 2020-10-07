@@ -10,9 +10,11 @@ import { getConnection } from "typeorm";
 import { controllers } from '../controllers';
 import Router = require('koa-router');
 import { koaSwagger } from 'koa2-swagger-ui';
+import https from 'https';
+import fs from 'fs';
 
 // load .env data
-config(); const {node_env, server_port } = process.env;
+config(); const {node_env, http_port, https_port } = process.env;
 
 export class HttpServerFactory extends BaseFactory {
 
@@ -87,9 +89,29 @@ export class HttpServerFactory extends BaseFactory {
         //////////////////////////////////////////////////////
         
         //////////////////////////////////////////////////////
-        // start listener
-        app.listen(server_port).on('listening', () => console.log(`Server started on port = ${server_port} [${String(node_env).toUpperCase()}], test on http://localhost:${server_port}`.bgGreen.bold))
+        // http: start listener
+        // Shorthand for: http.createServer(app.callback()).listen(...)
+        app.listen(http_port).on('listening', () => console.log(`Server started on port = ${http_port} [${String(node_env).toUpperCase()}], test on http://localhost:${http_port}`.bgGreen.bold))
+        //////////////////////////////////////////////////////
+
+        //////////////////////////////////////////////////////
+        // https: start listener
+        const options = {
+            // Local certificates, if you don;t have them generate from mkcert or letsEncrypt
+            key: fs.readFileSync("./ssl/key.pem"),
+            cert: fs.readFileSync("./ssl/cert.pem")
+        };
+        
+        function listeningReporter() {
+            // `this` refers to the http server here
+            // const { address, port } = this.address();
+            // const protocol = this.addContext ? 'https' : 'http';
+            // console.log(`Listening on ${protocol}://${address}:${port}...`);
+            console.log(`Server started on port = ${https_port} [${String(node_env).toUpperCase()}], test on https://localhost:${https_port}`.bgGreen.bold);
+        }
+
+        const httpsServer = https.createServer(options, app.callback())
+            .listen(Number(https_port)).on('listening', ()  => listeningReporter());
         //////////////////////////////////////////////////////
     }
 }
-

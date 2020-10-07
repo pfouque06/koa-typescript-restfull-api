@@ -35,7 +35,8 @@ Create .env file for static properties like this:
 
 - HTTP server properties
 > node_env=prod  
-> server_port=8080  
+> http_port=8080  
+> https_port=8443  
 
 ts-node-dev is used in development lifecycle. Use "npm run dev" command to start the application.
 
