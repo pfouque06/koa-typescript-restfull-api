@@ -1,21 +1,22 @@
 import { config } from 'dotenv';
+import { Logger } from '.';
+import { BaseFactory } from './BaseFactory';
+import * as swaggeSpec from './swagger.json';
+import { AuthService } from '../services/AuthService';
+import Container from 'typedi';
 import * as Koa from 'koa';
 import { Action, createKoaServer, useContainer } from "routing-controllers";
 import { getConnection } from "typeorm";
 import { controllers } from '../controllers';
 import Router = require('koa-router');
-import Container from 'typedi';
-import { AuthService } from '../services/AuthService';
 import { koaSwagger } from 'koa2-swagger-ui';
-import * as swaggeSpec from './swagger.json';
-import { Logger } from './Logger';
 
 // load .env data
 config(); const {node_env, server_port } = process.env;
 
-export class HttpServerFactory {
+export class HttpServerFactory extends BaseFactory {
 
-    public static async init (): Promise<void> {
+    async init(): Promise<void> {
         console.log(`${Logger.isoDate()} HttpServerFactory.init()`.bgBlack.white);
 
         const authService: AuthService = Container.get<AuthService>(AuthService);

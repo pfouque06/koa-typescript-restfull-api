@@ -1,8 +1,8 @@
+import { Logger } from "../factories";
 import { Body, Get,  Post, JsonController,  Authorized, CurrentUser } from "routing-controllers";
 import { DeepPartial } from "typeorm";
 import { LoginForm } from "../entities/forms/LoginForm";
 import { User } from "../entities/models/User";
-import { Logger } from "../factories/Logger";
 import { AuthService } from "../services/AuthService";
 
 // @Controller()

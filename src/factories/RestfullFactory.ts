@@ -1,14 +1,14 @@
-import { services } from "../services"
+import { Logger } from ".";
+import { BaseFactory } from './BaseFactory';
 import Container from "typedi"
-import { UserService } from "../services/UserService"
-import { Logger } from "./Logger";
+import { services, UserService } from "../services"
 
 //////////////////////////////////////////////////////
 // RESTFULL factory : Controllers, Services & Repository
 
-export class RestfullFactory {
+export class RestfullFactory extends BaseFactory {
 
-    public static async init(): Promise<void> {
+    async init(): Promise<void> {
         console.log(`${Logger.isoDate()} RestfullFactory.init()`.bgBlack.white);
 
         // declare Services & Repository with typedi module

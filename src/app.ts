@@ -1,19 +1,14 @@
 import 'colors';
-import { DataBaseFactory, RestfullFactory, HttpServerFactory } from './factories';
-import { Logger } from './factories/Logger';
+import { Logger, restfullFactories } from './factories';
 
 const startApp = async () => {
     console.log(`--------------------------------------------------`);
     console.log(`${Logger.isoDate()} startApp()`.bgBlack.white);
     
-    // DB Factory
-    await DataBaseFactory.init();
-    
-    // RESTFULL Factory
-    await RestfullFactory.init();
-    
-    // HTTP Server Factory
-    await HttpServerFactory.init();
+    // declare Services, related Repositories with typedi module for dependancy injection :
+    for await (const factory of restfullFactories) {
+        await new factory().init();
+    }
 }
 
 startApp();
