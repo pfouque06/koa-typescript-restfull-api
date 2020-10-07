@@ -1,20 +1,18 @@
 import 'colors';
-import { DBconnection } from './factories/DataBaseFactory';
-import { restfullFactory } from './factories/RestfullFactory';
-import { httpServerFactory } from './factories/HttpServerFactory';
+import { DataBaseFactory, RestfullFactory, HttpServerFactory } from './factories';
 
 const startApp = async () => {
     console.log(`--------------------------------------------------`);
-    console.log(`${new Date().toISOString()} startApp()`.bgGreen);
+    console.log(`${new Date().toISOString()} startApp()`.bgBlack.white);
     
     // DB Factory
-    await DBconnection();
+    await DataBaseFactory.init();
     
     // RESTFULL Factory
-    await restfullFactory();
+    await RestfullFactory.init();
     
     // HTTP Server Factory
-    await httpServerFactory();
+    await HttpServerFactory.init();
 }
 
 startApp();
