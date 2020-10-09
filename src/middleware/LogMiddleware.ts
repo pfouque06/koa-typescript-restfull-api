@@ -7,7 +7,10 @@ export class LogMiddleware implements KoaMiddlewareInterface {
         // console.log(context);
         console.log(`--------------------------------------------------`.bgCyan);
         let log: string = LogMiddleware.isoDate();
-        log += ' [IP src: ' + context.ip.replace(/^.*:/, '') + ']';
+        // log += ' [IP src: ' + context.ip.replace(/^.*:/, '') + ']';
+        const ipArray = context.ip.split(':')
+        const ipSrc = ipArray[ipArray.length - 1]
+        log += ' [IP src: ' + ipSrc + ']';
         log += ' ' + context.request.method + '/' + context.request.host + context.request.url;
         console.log(log.bgCyan);
         return next().then(() => {
