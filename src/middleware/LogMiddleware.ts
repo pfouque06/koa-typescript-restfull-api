@@ -1,4 +1,21 @@
-export class Logger {
+import { KoaMiddlewareInterface, Middleware } from "routing-controllers";
+
+@Middleware({ type: "before" })
+export class LogMiddleware implements KoaMiddlewareInterface {
+
+    use(context: any, next: (err?: any) => Promise<any>): Promise<any> {
+        // console.log(context);
+        console.log(`--------------------------------------------------`.bgCyan);
+        let log: string = LogMiddleware.isoDate();
+        log += ' [IP src: ' + context.ip.replace(/^.*:/, '') + ']';
+        log += ' ' + context.request.method + '/' + context.request.host + context.request.url;
+        console.log(log.bgCyan);
+        return next().then(() => {
+            console.log();
+        }).catch(error => {
+            console.log();
+        });
+    }
 
     public static isoDate(): string {
         const date=new Date();

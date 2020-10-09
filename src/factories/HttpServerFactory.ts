@@ -1,7 +1,6 @@
 import { config } from 'dotenv';
-import { Logger } from '.';
 import { BaseFactory } from './BaseFactory';
-import * as swaggeSpec from './swagger.json';
+import * as swaggerSpec from './swagger.json';
 import { AuthService } from '../services/AuthService';
 import Container from 'typedi';
 import * as Koa from 'koa';
@@ -12,6 +11,7 @@ import Router = require('koa-router');
 import { koaSwagger } from 'koa2-swagger-ui';
 import https from 'https';
 import fs from 'fs';
+import { LogMiddleware, middlewares } from '../middleware';
 
 // load .env data
 config(); const {node_env, http_port, https_port } = process.env;
@@ -19,7 +19,7 @@ config(); const {node_env, http_port, https_port } = process.env;
 export class HttpServerFactory extends BaseFactory {
 
     async init(): Promise<void> {
-        console.log(`${Logger.isoDate()} HttpServerFactory.init()`.bgBlack.white);
+        console.log(`${LogMiddleware.isoDate()} HttpServerFactory.init()`.bgBlack.white);
 
         const authService: AuthService = Container.get<AuthService>(AuthService);
     
@@ -28,6 +28,7 @@ export class HttpServerFactory extends BaseFactory {
     
         // Koa Server init
         const app: Koa = createKoaServer({ // or const app: Koa<DefaultState, DefaultContext> = new Koa();llers module
+            middlewares: middlewares,
             controllers: controllers,
             development: (String(node_env).toLowerCase() != "prod"),
             // errorOverridingMap: { name: "name", message: "message", stack: "" }, // attemp to remove stack (name, message, stack)
@@ -39,7 +40,7 @@ export class HttpServerFactory extends BaseFactory {
             async currentUserChecker(action: Action) {
                 // console.log(`@startApp.currentUserChecker()`.cyan);
                 return await authService.currentUserChecker(action);
-            }
+            }, 
         })
         // assign DBconnection reference to Koa
         app.context.db = getConnection();
@@ -50,7 +51,7 @@ export class HttpServerFactory extends BaseFactory {
                 title: 'swagger', // page title
                 routePrefix: '/swagger', // host at /swagger instead of default /docs
                 swaggerOptions: {
-                    spec: swaggeSpec,
+                    spec: swaggerSpec,
                     // url: 'http://petstore.swagger.io/v2/swagger.json', // example path to json
                 },
             })
@@ -63,8 +64,8 @@ export class HttpServerFactory extends BaseFactory {
     
         // Cascading process with next() method
         router.get('/', async (ctx, next) => { // or router.get('/', async (ctx: ParameterizedContext<DefaultState, DefaultContext>, next) => {
-            console.log(`--------------------------------------------------`.bgCyan);
-            console.log(`${Logger.isoDate()} HELLO service`.bgCyan);
+            // console.log(`--------------------------------------------------`.bgCyan);
+            console.log(`${LogMiddleware.isoDate()} HELLO service`.bgCyan);
             await next();
             ctx.body= 'Hello buddy';
             console.log('finally ', ctx.body);

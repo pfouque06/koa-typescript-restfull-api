@@ -1,9 +1,9 @@
 import { config } from 'dotenv';
-import { Logger } from '.';
 import { BaseFactory } from './BaseFactory';
 import { createConnection, getConnection } from 'typeorm';
 import 'reflect-metadata';
 import { entities } from '../entities/models'
+import { LogMiddleware } from '../middleware';
 
 //////////////////////////////////////////////////////
 // DB Factory
@@ -19,7 +19,7 @@ export class DataBaseFactory extends BaseFactory {
     // connect to DB
     // public static async synchronize(flush: boolean) {
     async synchronize(flush: boolean):  Promise<void> {
-        console.log(`${Logger.isoDate()} DataBaseFactory.synchronize()`.bgBlack.white);
+        console.log(`${LogMiddleware.isoDate()} DataBaseFactory.synchronize()`.bgBlack.white);
 
         await getConnection().synchronize(flush) // true will drop tables after initial connection
         .then(() => console.log(`Synchronize with DB: jdbc:${db_type}//${db_schema }`.bgGreen.bold))
@@ -29,7 +29,7 @@ export class DataBaseFactory extends BaseFactory {
     // DB connection & entities init with typeorm module
     // public static async init() : Promise<void> {
     async init() : Promise<void> {
-        console.log(`${Logger.isoDate()} DataBaseFactory.init()`.bgBlack.white);
+        console.log(`${LogMiddleware.isoDate()} DataBaseFactory.init()`.bgBlack.white);
 
         switch (db_type) {
             case "mysql": {
