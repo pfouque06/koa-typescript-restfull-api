@@ -13,14 +13,14 @@ config()
 const { redis_host, redis_port, JWT_secret, JWT_expiration_delay } = process.env
 
 export class AuthService {
-
+    
     public redisClient: redis.RedisClient;
     public jwtr: JWTR.default;
     public userService: UserService;
     
     constructor() {
         console.log(`Start AuthService(expiration delay: ${JWT_expiration_delay})`.underline);
-
+        
         // reddis db init
         this.redisClient = redis.createClient({
             host: redis_host, // default: "127.0.0.1",
@@ -28,16 +28,27 @@ export class AuthService {
         });
         console.log(`Synchronize with DB: Redis://${redis_host}:${redis_port}`.bgGreen.bold);
         this.resetData();
-
+        
         // JWTR init
         this.jwtr = new JWTR.default(this.redisClient);
-
+        
         // userService loookup
         this.userService = Container.get<UserService>(UserService);
     }
+    
+    ping(): Promise<Boolean> {
+        console.log(`-> AuthService.ping()`.bgYellow);
+        return new Promise<Boolean>(resolve => resolve(true));
+    }
+
+    test(currentUser: DeepPartial<User>): Promise<String> {
+        console.log(`-> AuthService.test(currentUser: ${currentUser.email})`.bgCyan);
+        const result: string =`TEST: access validated for ${currentUser.email} as ${currentUser.profile} `;
+        return new Promise<String>(resolve => resolve(result));
+    }
 
     async register(userCredentials: LoginForm): Promise<User> {
-        console.log(`-> UserService.register(email: ${userCredentials.email})`.bgYellow);
+        console.log(`-> AuthService.register(email: ${userCredentials.email})`.bgYellow);
         return await this.userService.create({...userCredentials});
     }
 

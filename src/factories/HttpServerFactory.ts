@@ -12,6 +12,7 @@ import { koaSwagger } from 'koa2-swagger-ui';
 import https from 'https';
 import fs from 'fs';
 import { LogMiddleware, middlewares } from '../middleware';
+import cors = require('kcors');
 
 // load .env data
 config(); const {node_env, http_port, https_port } = process.env;
@@ -28,6 +29,7 @@ export class HttpServerFactory extends BaseFactory {
     
         // Koa Server init
         const app: Koa = createKoaServer({ // or const app: Koa<DefaultState, DefaultContext> = new Koa();llers module
+            cors: cors,
             middlewares: middlewares,
             controllers: controllers,
             development: (String(node_env).toLowerCase() != "prod"),
@@ -57,7 +59,8 @@ export class HttpServerFactory extends BaseFactory {
             })
         );
     
-    
+        // app.use(cors);
+
         //////////////////////////////////////////////////////
         // demo for koa_router
         const router: Router = new Router();
@@ -82,7 +85,7 @@ export class HttpServerFactory extends BaseFactory {
             // console.log('X-Response-Time', `${ms}ms`);
             ctx.set('X-Response-Time', `${ms}ms`);
         })
-        
+
         router.get('/', async (ctx) => {
             ctx.body= 'Hi there, buddy';
         })

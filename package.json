@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/dotenv": "^8.2.0",
+    "@types/kcors": "^2.2.3",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
@@ -21,6 +22,7 @@
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-redis": "^6.0.0",
+    "kcors": "^2.2.2",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^9.4.0",

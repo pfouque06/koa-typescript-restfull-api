@@ -13,6 +13,13 @@ export class AuthController {
         console.log("Start AuthController".underline);
     }
     
+        
+    @Get("/ping")
+    ping() : Promise<Boolean> {
+        // console.log(`${LogMiddleware.isoDate()} GET /test`.bgCyan);
+        return this.authService.ping();
+    }
+
     @Post('/register')
     register(@Body() userCredentials: LoginForm): Promise<User> {
         // console.log(`${LogMiddleware.isoDate()} POST /users/register`.bgCyan); //Date.parse("YYYY-MM-DDTHH:mm:ss")
@@ -34,9 +41,9 @@ export class AuthController {
     
     @Get("/test")
     @Authorized(["admin", "user"])
-    allAccess(@CurrentUser() currentUser: DeepPartial<User>) {
-        // console.log(`${LogMiddleware.isoDate()} GET /test`.bgCyan);
-        return `TEST: access validated for ${currentUser.email} as ${currentUser.profile} `;
+    test(@CurrentUser() currentUser: DeepPartial<User>): Promise<String> {
+        // console.log(`-> AuthController.test()`.bgCyan);
+        return this.authService.test(currentUser);
     }
 
     @Post('/reset')
