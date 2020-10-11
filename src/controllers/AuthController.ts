@@ -48,9 +48,8 @@ export class AuthController {
 
     @Post('/reset')
     @Authorized("admin")
-    resetData() {
+    resetData(): Promise<boolean> {
         // console.log(`${LogMiddleware.isoDate()} POST /reset`.bgCyan);
-        if (!this.authService.resetData()) return 'KO';
-        return 'OK'
+        return this.authService.resetData();
     }
 }

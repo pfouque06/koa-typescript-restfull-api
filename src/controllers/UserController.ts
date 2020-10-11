@@ -50,7 +50,6 @@ export class UserController {
     @Authorized("admin")
     resetData() {
         // console.log(`${Logger.isoDate()} POST /reset`.bgCyan);
-        if (!this.userService.resetData()) return 'KO';
-        return 'OK'
+        return this.userService.resetData();
     }
 }
