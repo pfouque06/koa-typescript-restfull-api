@@ -40,18 +40,12 @@ export class AuthService {
         console.log(`-> AuthService.ping()`.bgYellow);
         return new Promise<Boolean>(resolve => resolve(true));
     }
-
-    test(currentUser: DeepPartial<User>): Promise<String> {
-        console.log(`-> AuthService.test(currentUser: ${currentUser.email})`.bgCyan);
-        const result: string =`TEST: access validated for ${currentUser.email} as ${currentUser.profile} `;
-        return new Promise<String>(resolve => resolve(result));
-    }
-
+    
     async register(userCredentials: LoginForm): Promise<User> {
         console.log(`-> AuthService.register(email: ${userCredentials.email})`.bgYellow);
         return await this.userService.create({...userCredentials});
     }
-
+    
     async login(userCredentials: LoginForm): Promise<User> {
         console.log(`-> AuthService.login(email: ${userCredentials.email})`.bgYellow);
         
@@ -77,7 +71,7 @@ export class AuthService {
         
         // get required properties
         const { email, accessToken } = currentUser
-
+        
         // find user by its email without accessToken
         try {
             // let user: Exclude<User, { accessToken: string }>
@@ -86,9 +80,19 @@ export class AuthService {
         } catch {
             throw new NotFoundError(`Error: user ${email} not found`)
         }
-
+        
         // destroy token
         return await this.destroyJWT(accessToken as string);
+    }
+    
+    myself(currentUser: DeepPartial<User>): Promise<User> {
+        return new Promise<User>(resolve => resolve(currentUser as User));;
+    }
+
+    test(currentUser: DeepPartial<User>): Promise<String> {
+        console.log(`-> AuthService.test(currentUser: ${currentUser.email})`.bgCyan);
+        const result: string =`TEST: access validated for ${currentUser.email} as ${currentUser.profile} `;
+        return new Promise<String>(resolve => resolve(result));
     }
     
     async authenticateUser(password: string, user: DeepPartial<User>): Promise<User> {
@@ -108,11 +112,81 @@ export class AuthService {
         }
     }
 
+    async getSessions(): Promise<Array<string>> {
+        console.log(`--> AuthService.getSessions()`.bgYellow);
+        var sessions: string[] = [];
+        var cursor: string = '0';
+
+        //  // await Promise.all(this.redisClient.keys("*", async (err, keys) => {
+        // this.redisClient.keys("*", async (err, keys) => {
+        //     if (err) {
+        //         console.log(err);
+        //         throw new UnauthorizedError(`Error: redis error - ${err}`)
+        //     }
+        //     if(keys){
+        //         //     console.log('keys: ', keys);
+        //         Promise.all(keys.map(key => this.redisClient.get(key))).then(jwt => {
+        //             //     console.log('jwt: ', jwt); // boolean
+        //         });
+                
+        //         //     for(const key of keys) {
+        //         //         console.log('key: ', key);
+        //         //         if ( await this.redisClient.get(key).valueOf()) { sessions.push(key); }
+        //         //         // this.redisClient.get(key, (error, jwt) => {
+        //         //         //     if (error) {
+        //         //         //         console.log(error);
+        //         //         //         throw new UnauthorizedError(`Error: redis error - ${error}`)
+        //         //         //     }
+        //         //         //     console.log('jwt: ', jwt); // boolean
+        //         //         // });
+        //         //         // sessions.push(key);
+        //         //     }
+        //     };
+        //     sessions = [...keys];
+        //     console.log('sessions: ',sessions);
+        //     // return sessions;
+        // });
+
+        console.log('--------------------------------');
+
+        do {
+            console.log('cursor: ', cursor);
+            if( this.redisClient.scan(
+                cursor, 
+                'MATCH', '*',
+                'COUNT', '1',
+                (err, set) => {
+            // this.redisClient.keys("*", async (err, keys) => {
+                if (err) {
+                    console.log(err);
+                    throw new UnauthorizedError(`Error: redis error - ${err}`)
+                }
+                // Update the cursor position for the next scan
+                cursor = set[0];
+                console.log('new cursor: ', cursor);
+                var keys = set[1];
+                if (keys.length > 0) {
+                    console.log('keys: ', keys);
+                    // sessions = [...sessions, ...keys];
+                    sessions.push(...keys);
+                }
+                console.log('partial/sessions: ',sessions);
+                if (cursor === '0') {
+                    console.log('Iteration complete');
+                    return sessions;
+                }
+            })) console.log('new cursor: ', cursor);
+        } while (cursor != '0')
+
+        console.log('end/sessions: ',sessions);
+        return sessions;
+    }
+    
     async generateJWT(user: DeepPartial<User>): Promise<string> {
         console.log(`--> AuthService.generateJWT(user)`.bgYellow);
         return await this.jwtr.sign({ ...user }, JWT_secret as string, { expiresIn: JWT_expiration_delay });
     }
-
+    
     async destroyJWT(token: string): Promise<boolean> {
         console.log(`-> AuthService.destroyJWT(token)`.bgYellow);
         if (! token) throw new NotFoundError(`Error: token session is not provided`);
@@ -121,27 +195,27 @@ export class AuthService {
         if (! await this.jwtr.destroy(jti)) throw new NotFoundError(`Error: unknown token`);
         return true;
     }
-
+    
     // Flush repository 
     async resetData(skipFlush?: boolean): Promise<boolean> {
         console.log(`-> AuthService.resetData(${skipFlush?`skipFlush: ${skipFlush}`:""})`.bgYellow);
-
+        
         // reset redis db also if required
         if ( ! skipFlush ) {
             console.log(`flushing redis DB`.underline);
             this.flushDB();
         }
-
+        
         // // Flush userRepository and inject user data Set
         // if (! this.userService.resetData(skipFlush)) return false;
         return true;
     }
-
+    
     async flushDB(): Promise<void> {
         console.log(`-> AuthService.flushDB()`.bgYellow);
         this.redisClient.flushdb();
     }  
-
+    
     async authorizationChecker(action: Action, profiles: string[]): Promise<boolean> {
         // console.log(`-> AuthService.authorizationChecker(action, profiles)`.bgYellow);
         let token: string; 
@@ -152,11 +226,11 @@ export class AuthService {
             // console.log(error);
             switch (error.name) {
                 case "TypeError":
-                    throw new UnauthorizedError("Error: session JWT not provided");
+                throw new UnauthorizedError("Error: session JWT not provided");
                 case "TokenExpiredError":
-                    throw new UnauthorizedError("Error: Expired session");
+                throw new UnauthorizedError("Error: Expired session");
                 default:
-                    throw new UnauthorizedError("Error: Unauthorized access");
+                throw new UnauthorizedError("Error: Unauthorized access");
             }
         }
         const decodedUser: DeepPartial<User> = this.decodeJWT(token);
@@ -173,7 +247,8 @@ export class AuthService {
         const decodedUser: DeepPartial<User> = this.decodeJWT(token);
         // console.log(`provided user email: ${decodedUser.email}`)
         try { 
-            return { ...await getConnection().getRepository(User).findOneOrFail(decodedUser.id), accessToken: token }; 
+            // return { ...await getConnection().getRepository(User).findOneOrFail(decodedUser.id), accessToken: token }; 
+            return { ...await this.userService.getById(decodedUser.id as number), accessToken: token}; 
         } catch { throw new NotFoundError(`Error: user not found`); }
     }
     
@@ -183,7 +258,7 @@ export class AuthService {
         // console.log(`-> Authorization: ${authorization}-> token: ${token}`.cyan);
         return token;
     }
-
+    
     decodeJWT(token: string): DeepPartial<User> {
         return this.jwtr.decode(token) as DeepPartial<User>;
     }

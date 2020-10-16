@@ -19,7 +19,7 @@ export class AuthController {
         // console.log(`${LogMiddleware.isoDate()} GET /test`.bgCyan);
         return this.authService.ping();
     }
-
+    
     @Post('/register')
     register(@Body() userCredentials: LoginForm): Promise<User> {
         // console.log(`${LogMiddleware.isoDate()} POST /users/register`.bgCyan); //Date.parse("YYYY-MM-DDTHH:mm:ss")
@@ -39,11 +39,25 @@ export class AuthController {
         return this.authService.logout(currentUser);
     }
     
+    @Get("/myself")
+    @Authorized()
+    myself(@CurrentUser() currentUser: DeepPartial<User>): Promise<User> {
+        // console.log(`-> AuthController.test()`.bgCyan);
+        return this.authService.myself(currentUser);
+    }
+    
     @Get("/test")
     @Authorized(["admin", "user"])
     test(@CurrentUser() currentUser: DeepPartial<User>): Promise<String> {
         // console.log(`-> AuthController.test()`.bgCyan);
         return this.authService.test(currentUser);
+    }
+    
+    @Get("/sessions")
+    // @Authorized(["admin"])
+    async getSessions(): Promise<Array<string>> {
+        // console.log(`-> AuthController.test()`.bgCyan);
+        return this.authService.getSessions();
     }
 
     @Post('/reset')
