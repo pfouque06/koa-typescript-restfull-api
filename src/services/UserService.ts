@@ -22,22 +22,22 @@ export class UserService extends BaseService<User> {
     }
     
     async getAll():  Promise<Array<User>> {
-        console.log(`-> UserService.getAll()`.bgYellow);
+        console.log(`-> UserService.getAll()`.bgYellow.black);
         return await this.userRepository.getAll();
     }
     
     async getById(id: number, where?: ObjectLiteral): Promise<User> {
-        console.log(`-> UserService.getById(id: ${id}, where: ${JSON.stringify(where)})`.bgYellow);
+        console.log(`-> UserService.getById(id: ${id}, where: ${JSON.stringify(where)})`.bgYellow.black);
         return await this.userRepository.getById(id, where);
     }
     
     async getByMail(email: string): Promise<User> {
-        console.log(`-> UserService.getByMail(email: ${email})`.bgYellow);
+        console.log(`-> UserService.getByMail(email: ${email})`.bgYellow.black);
         return await this.userRepository.getById(undefined, { email });
     }
     
     async isUnique(email: string): Promise<boolean> {
-        console.log(`--> UserService.isUnique(email: ${email})`.bgYellow);
+        console.log(`--> UserService.isUnique(email: ${email})`.bgYellow.black);
         try {
             await this.userRepository.getById(undefined, { email });
         } catch (error) {
@@ -55,7 +55,7 @@ export class UserService extends BaseService<User> {
     }
     
     async getValidatedUser(user: DeepPartial<User>, validatorOptions?: ValidatorOptions): Promise<DeepPartial<User>> {
-        console.log(`--> UserService.getValidatedUser(email: ${user.email})`.bgYellow);
+        console.log(`--> UserService.getValidatedUser(email: ${user.email})`.bgYellow.black);
         
         // create new User instance
         let instance: DeepPartial<User> = this.userRepository.getInstance(user);
@@ -74,7 +74,7 @@ export class UserService extends BaseService<User> {
     }
     
     async create(user: DeepPartial<User>): Promise<User> {
-        console.log(`-> UserService.create(body.email: ${user.email})`.bgYellow);
+        console.log(`-> UserService.create(body.email: ${user.email})`.bgYellow.black);
         // create validated instance
         const instance: DeepPartial<User> = await this.getValidatedUser(user, { groups: [CREATE] });
         //save instance
@@ -82,7 +82,7 @@ export class UserService extends BaseService<User> {
     }
     
     async update(id: number, user: DeepPartial<User>, currentUser: DeepPartial<User>): Promise<User> {
-        console.log(`-> UserService.update(id: ${id})`.bgYellow);
+        console.log(`-> UserService.update(id: ${id})`.bgYellow.black);
         
         // check id versus own id if current is user profile
         if (currentUser.profile == 'user' && id != currentUser.id)
@@ -104,7 +104,7 @@ export class UserService extends BaseService<User> {
     }
     
     async del(id: number): Promise<User> {
-        console.log(`-> UserService.del(id: ${id})`.bgYellow);
+        console.log(`-> UserService.del(id: ${id})`.bgYellow.black);
 
         // validate id
         try {
@@ -118,7 +118,7 @@ export class UserService extends BaseService<User> {
     
     // Flush repository and inject user data Set
     async resetData(skipFlush?: boolean): Promise<boolean> {
-        console.log(`-> UserService.resetData(${skipFlush?`skipFlush: ${skipFlush}`:""})`.bgYellow);
+        console.log(`-> UserService.resetData(${skipFlush?`skipFlush: ${skipFlush}`:""})`.bgYellow.black);
         
         // flush Repository if needed
         if ( ! skipFlush && (await this.userRepository.getAll()).length > 0) {

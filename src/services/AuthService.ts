@@ -21,7 +21,7 @@ export class AuthService {
     constructor() {
         console.log(`Start AuthService(expiration delay: ${JWT_expiration_delay})`.underline);
         
-        // reddis db init
+        // redis db init
         this.redisClient = redis.createClient({
             host: redis_host, // default: "127.0.0.1",
             port: Number(redis_port) // default: 6379
@@ -37,17 +37,17 @@ export class AuthService {
     }
     
     ping(): Promise<Boolean> {
-        console.log(`-> AuthService.ping()`.bgYellow);
+        console.log(`-> AuthService.ping()`.bgYellow.black);
         return new Promise<Boolean>(resolve => resolve(true));
     }
     
     async register(userCredentials: LoginForm): Promise<User> {
-        console.log(`-> AuthService.register(email: ${userCredentials.email})`.bgYellow);
+        console.log(`-> AuthService.register(email: ${userCredentials.email})`.bgYellow.black);
         return await this.userService.create({...userCredentials});
     }
     
     async login(userCredentials: LoginForm): Promise<User> {
-        console.log(`-> AuthService.login(email: ${userCredentials.email})`.bgYellow);
+        console.log(`-> AuthService.login(email: ${userCredentials.email})`.bgYellow.black);
         
         // const validationRes: Array<ValidationError> = await validate(userCredentials)
         // if (validationRes.length > 0) throw validationRes
@@ -67,7 +67,7 @@ export class AuthService {
     }
     
     async logout(currentUser: DeepPartial<User>): Promise<boolean> {
-        console.log(`-> AuthService.logout(email: ${currentUser.email})`.bgYellow);
+        console.log(`-> AuthService.logout(email: ${currentUser.email})`.bgYellow.black);
         
         // get required properties
         const { email, accessToken } = currentUser
@@ -96,7 +96,7 @@ export class AuthService {
     }
     
     async authenticateUser(password: string, user: DeepPartial<User>): Promise<User> {
-        console.log(`-> AuthService.authenticateUser(password, user)`.bgYellow);
+        console.log(`-> AuthService.authenticateUser(password, user)`.bgYellow.black);
         // validate hash from password and user's salt
         try {
             const hashedPass = await hash(password, user.salt as string)
@@ -107,13 +107,15 @@ export class AuthService {
                 const jwt: string = await this.generateJWT({...user});
                 return { ...user, accessToken: jwt } as User;   
             } else throw Error()
-        } catch {
+        } catch (error) {
+            console.log('--> error: ', error);
+            
             throw new UnauthorizedError(`Error: wrong password for ${user.email}`)
         }
     }
 
     async getSessions(): Promise<Array<string>> {
-        console.log(`--> AuthService.getSessions()`.bgYellow);
+        console.log(`--> AuthService.getSessions()`.bgYellow.black);
         var sessions: string[] = [];
         var cursor: string = '0';
 
@@ -183,12 +185,12 @@ export class AuthService {
     }
     
     async generateJWT(user: DeepPartial<User>): Promise<string> {
-        console.log(`--> AuthService.generateJWT(user)`.bgYellow);
+        console.log(`--> AuthService.generateJWT(user)`.bgYellow.black);
         return await this.jwtr.sign({ ...user }, JWT_secret as string, { expiresIn: JWT_expiration_delay });
     }
     
     async destroyJWT(token: string): Promise<boolean> {
-        console.log(`-> AuthService.destroyJWT(token)`.bgYellow);
+        console.log(`-> AuthService.destroyJWT(token)`.bgYellow.black);
         if (! token) throw new NotFoundError(`Error: token session is not provided`);
         // retrieve generated tojen identifier
         const {jti} =  this.jwtr.decode(token) as {jti: string};
@@ -198,7 +200,7 @@ export class AuthService {
     
     // Flush repository 
     async resetData(skipFlush?: boolean): Promise<boolean> {
-        console.log(`-> AuthService.resetData(${skipFlush?`skipFlush: ${skipFlush}`:""})`.bgYellow);
+        console.log(`-> AuthService.resetData(${skipFlush?`skipFlush: ${skipFlush}`:""})`.bgYellow.black);
         
         // reset redis db also if required
         if ( ! skipFlush ) {
@@ -212,12 +214,12 @@ export class AuthService {
     }
     
     async flushDB(): Promise<void> {
-        console.log(`-> AuthService.flushDB()`.bgYellow);
+        console.log(`-> AuthService.flushDB()`.bgYellow.black);
         this.redisClient.flushdb();
     }  
     
     async authorizationChecker(action: Action, profiles: string[]): Promise<boolean> {
-        // console.log(`-> AuthService.authorizationChecker(action, profiles)`.bgYellow);
+        // console.log(`-> AuthService.authorizationChecker(action, profiles)`.bgYellow.black);
         let token: string; 
         try {
             token = this.parseJWT(action.request.headers);
@@ -242,7 +244,7 @@ export class AuthService {
     }
     
     async currentUserChecker(action: Action) {
-        // console.log(`-> AuthService.currentUserChecker(actopn)`.bgYellow);
+        // console.log(`-> AuthService.currentUserChecker(action)`.bgYellow.black);
         const token = this.parseJWT(action.request.headers);
         const decodedUser: DeepPartial<User> = this.decodeJWT(token);
         // console.log(`provided user email: ${decodedUser.email}`)
