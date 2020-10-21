@@ -26,20 +26,25 @@ export class UserService extends BaseService<User> {
         return await this.userRepository.getAll();
     }
     
-    async getById(id: number, where?: ObjectLiteral): Promise<User> {
-        console.log(`-> UserService.getById(id: ${id}, where: ${JSON.stringify(where)})`.bgYellow.black);
-        return await this.userRepository.getById(id, where);
+    async getById(id: number): Promise<User> {
+        console.log(`-> UserService.getById(id: ${id})`.bgYellow.black);
+        return await this.userRepository.getById(id);
     }
+    
+    // async getByMatch(where: ObjectLiteral): Promise<User> {
+    //     console.log(`-> UserService.getByMatch(where: ${JSON.stringify(where)})`.bgYellow.black);
+    //     return await this.userRepository.getByMatch({ where });
+    // }
     
     async getByMail(email: string): Promise<User> {
         console.log(`-> UserService.getByMail(email: ${email})`.bgYellow.black);
-        return await this.userRepository.getById(undefined, { email });
+        return await this.userRepository.getByMatch({ email });
     }
     
     async isUnique(email: string): Promise<boolean> {
         console.log(`--> UserService.isUnique(email: ${email})`.bgYellow.black);
         try {
-            await this.userRepository.getById(undefined, { email });
+            await this.userRepository.getByMatch({ email });
         } catch (error) {
             return true;
         }
@@ -55,7 +60,7 @@ export class UserService extends BaseService<User> {
     }
     
     async getValidatedUser(user: DeepPartial<User>, validatorOptions?: ValidatorOptions): Promise<DeepPartial<User>> {
-        console.log(`--> UserService.getValidatedUser(email: ${user.email})`.bgYellow.black);
+        console.log(`--> UserService.getValidatedUser()`.bgYellow.black);
         
         // create new User instance
         let instance: DeepPartial<User> = this.userRepository.getInstance(user);
@@ -116,6 +121,25 @@ export class UserService extends BaseService<User> {
         return this.userRepository.del(id);
     }
     
+    async changePassword(currentUser: DeepPartial<User>, password: string): Promise<boolean> {
+        console.log(`-> UserService.changePassword()`.bgYellow.black);
+        try {
+            // console.log('currentUser:', currentUser);
+            const currentUserId: number = currentUser.id as number;
+
+            // validate new password, change password & salt
+            let user: DeepPartial<User> = { password: password};
+            const instance: DeepPartial<User> = await this.getValidatedUser(user, { groups: [UPDATE] });
+
+            // console.log('instance:', instance);
+            await this.userRepository.update(currentUserId, instance);
+        } catch (error) {
+            console.log("UserService.changePassword() --> error: ", error);
+            throw error;
+        }
+        return new Promise<boolean>(resolve => resolve(true));
+    }
+
     // Flush repository and inject user data Set
     async resetData(skipFlush?: boolean): Promise<boolean> {
         console.log(`-> UserService.resetData(${skipFlush?`skipFlush: ${skipFlush}`:""})`.bgYellow.black);

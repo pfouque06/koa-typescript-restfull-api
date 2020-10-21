@@ -1,9 +1,10 @@
-import { Body, Get,  Post, JsonController,  Authorized, CurrentUser } from "routing-controllers";
+import { Body, Get,  Post, JsonController,  Authorized, CurrentUser, Put } from "routing-controllers";
 import { DeepPartial } from "typeorm";
 import { LoginForm } from "../entities/forms/LoginForm";
 import { User } from "../entities/models/User";
 import { AuthService } from "../services/AuthService";
 import { LogMiddleware } from "../middleware";
+import { PasswordForm } from "../entities/forms/PasswordForrm";
 
 // @Controller()
 @JsonController() // to ensure server deals only with json body types and uri starts with /users
@@ -46,8 +47,17 @@ export class AuthController {
         return this.authService.myself(currentUser);
     }
     
+    @Put("/changePassword")
+    @Authorized()
+    changePassword(
+        @CurrentUser() currentUser: DeepPartial<User>,
+        @Body({ validate: true }) passwordForm: PasswordForm ): Promise<boolean> {
+        // console.log(`-> AuthController.changePassword()`.bgCyan);
+        return this.authService.changePassword(currentUser, passwordForm);
+    }
+
     @Get("/test")
-    @Authorized(["admin", "user"])
+    @Authorized()
     test(@CurrentUser() currentUser: DeepPartial<User>): Promise<String> {
         // console.log(`-> AuthController.test()`.bgCyan);
         return this.authService.test(currentUser);

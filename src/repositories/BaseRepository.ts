@@ -21,12 +21,12 @@ export abstract class BaseRepository<T> {
         return true;
     }
 
-    async getById(id: number | undefined, where?: ObjectLiteral): Promise<T> {
-        if (where) {
-            return await this.repo.findOneOrFail(id, { where });
-        } else {
-            return await this.repo.findOneOrFail(id);
-        }
+    async getById(id: number): Promise<T> {
+        return await this.repo.findOneOrFail(id);
+    }
+
+    async getByMatch(where: ObjectLiteral): Promise<T> {
+        return await this.repo.findOneOrFail(undefined, { where });
     }
     
     async save(data: DeepPartial<T>): Promise<T> {

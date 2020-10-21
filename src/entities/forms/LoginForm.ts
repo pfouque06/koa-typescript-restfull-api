@@ -1,7 +1,5 @@
-import { Exclude } from "class-transformer"
-import { IsDefined, IsEmail, IsOptional, IsString, Length } from "class-validator"
-import { IsUniqueCustom } from "../customDecorators"
-import { User, UserProfile } from "../models/User"
+import { IsDefined, IsEmail, IsOptional, IsString } from "class-validator"
+import { UserProfile } from "../models/User"
 
 export class LoginForm {
     @IsDefined()
