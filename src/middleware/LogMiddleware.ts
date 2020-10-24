@@ -4,7 +4,26 @@ import { KoaMiddlewareInterface, Middleware } from "routing-controllers";
 export class LogMiddleware implements KoaMiddlewareInterface {
 
     use(context: any, next: (err?: any) => Promise<any>): Promise<any> {
-        // console.log(context);
+        // console.log('host: ', context.request.host.split(':')[0]);
+        
+        switch ( context.request.host.split(':')[0]) {
+            case "localhost":
+            case "minas01": 
+            case "nodejs.koa-typescript-restfull-api.pfouque.fr": { 
+                this.useLog(context); 
+                return next().then(() => {
+                    console.log();
+                }).catch(error => {
+                    console.log();
+                });
+            }
+            default: {
+                return next();
+            }
+        }
+    }
+
+    private useLog(context: any) {
         console.log(`--------------------------------------------------`.bgCyan);
         let log: string = LogMiddleware.isoDate();
         // log += ' [IP src: ' + context.ip.replace(/^.*:/, '') + ']';
@@ -13,11 +32,6 @@ export class LogMiddleware implements KoaMiddlewareInterface {
         log += ' [IP src: ' + ipSrc + ']';
         log += ' ' + context.request.method + '/' + context.request.host + context.request.url;
         console.log(log.bgCyan);
-        return next().then(() => {
-            console.log();
-        }).catch(error => {
-            console.log();
-        });
     }
 
     public static isoDate(): string {
