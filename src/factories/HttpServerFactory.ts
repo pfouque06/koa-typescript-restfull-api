@@ -70,7 +70,7 @@ export class HttpServerFactory extends BaseFactory {
             // console.log(`--------------------------------------------------`.bgCyan);
             console.log(`${LogMiddleware.isoDate()} HELLO service`.bgCyan);
             await next();
-            ctx.body= 'Hello buddy';
+            ctx.body= 'Hello buddy, I am Koa';
             console.log('finally ', ctx.body);
             const rt = ctx.response.get('X-Response-Time');
             console.log(`${ctx.method} ${ctx.url} - ${rt}`);
