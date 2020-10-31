@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+
+    backend:
+        image: node:12
+        depends_on:
+            - db_auth
+        volumes:
+            - ./:/usr/src/app
+            - node_modules:/usr/src/app/node_modules
+            - dist:/usr/src/app/dist
+        working_dir: /usr/src/app
+        command: sh -c 'npm install; npm run dev'
+        ports:
+            - "8443:8443"
+
+    db_auth:
+        image: redis
+        ports:
+            - "26379:6379"
+
+volumes:
+    node_modules:
+    dist:
+
