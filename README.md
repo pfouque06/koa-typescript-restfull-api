@@ -136,3 +136,16 @@ note: command lines to build up this project :
 > 127.0.0.1:6379> exit  
 
 
+## next version : the API is fully dockyfied with a redis container along!!!
+
+### once the api is cloned from github, create .env file with the redis_host changed to :
+> ####### Authentication DB properties #######
+> #redis_host=127.0.0.1
+> redis_host=db_auth
+
+##### prod :
+> $ sudo docker-compose -f docker-compose.prod.yml up
+
+##### dev :
+> $ sudo docker-compose up
+
