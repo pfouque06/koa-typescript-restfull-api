@@ -144,8 +144,10 @@ note: command lines to build up this project :
 > redis_host=db_auth
 
 ##### prod :
+> $ npm install; npm run build
 > $ sudo docker-compose -f docker-compose.prod.yml up
 
 ##### dev :
+> $ npm install
 > $ sudo docker-compose up
 
