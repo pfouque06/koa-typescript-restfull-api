@@ -11,7 +11,7 @@ services:
             - node_modules:/usr/src/app/node_modules
             - dist:/usr/src/app/dist
         working_dir: /usr/src/app
-        command: sh -c 'npm install; npm run build; npm run prod'
+        command: sh -c 'npm run prod'
         ports:
             - "8443:8443"
         logging:
