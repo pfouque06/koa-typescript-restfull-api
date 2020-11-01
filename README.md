@@ -139,15 +139,15 @@ note: command lines to build up this project :
 ## next version : the API is fully dockyfied with a redis container along!!!
 
 ### once the api is cloned from github, create .env file with the redis_host changed to :
-> ####### Authentication DB properties #######
-> #redis_host=127.0.0.1
-> redis_host=db_auth
+> ####### Authentication DB properties #######  
+> #redis_host=127.0.0.1  
+> redis_host=db_auth  
 
 ##### prod :
-> $ npm install; npm run build
-> $ sudo docker-compose -f docker-compose.prod.yml up
+> $ npm install; npm run build  
+> $ sudo docker-compose -f docker-compose.prod.yml up  
 
 ##### dev :
-> $ npm install
-> $ sudo docker-compose up
+> $ npm install  
+> $ sudo docker-compose up  
 
