@@ -6,6 +6,7 @@ services:
         image: node:12
         depends_on:
             - db_auth
+            - db_data
         volumes:
             - ./:/usr/src/app
             - node_modules:/usr/src/app/node_modules
@@ -28,7 +29,19 @@ services:
             options:
                 max-size: "10m"
 
+    db_data:
+        image: mysql:5
+        volumes:
+            - koa_data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: root
+        command:
+            - --max_allowed_packet=64M
+        ports:
+            - "23306:3306"
+
 volumes:
     node_modules:
     dist:
-
+    koa_data:

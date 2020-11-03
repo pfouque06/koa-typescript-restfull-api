@@ -5,7 +5,7 @@ node_modules
 dist
 
 # dotenv file
-.env
+#.env
 
 # koa db file/database
 koa.db
