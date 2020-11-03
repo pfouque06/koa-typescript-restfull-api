@@ -40,6 +40,10 @@ services:
             - --max_allowed_packet=64M
         ports:
             - "23306:3306"
+        logging:
+            driver: json-file
+            options:
+                max-size: "10m"
 
 volumes:
     node_modules:
