@@ -35,7 +35,7 @@ services:
             - koa_data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: root
+            MYSQL_DATABASE: koatypescript
         command:
             - --max_allowed_packet=64M
         ports:
