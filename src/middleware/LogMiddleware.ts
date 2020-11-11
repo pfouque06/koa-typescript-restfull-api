@@ -9,7 +9,7 @@ export class LogMiddleware implements KoaMiddlewareInterface {
         switch ( context.request.host.split(':')[0]) {
             case "localhost":
             case "minas01": 
-            case "nodejs.koa-typescript-restfull-api.pfouque.fr": { 
+            case "api.koa.pfouque.fr": { 
                 this.useLog(context); 
                 return next().then(() => {
                     console.log();
@@ -18,7 +18,7 @@ export class LogMiddleware implements KoaMiddlewareInterface {
                 });
             }
             default: {
-                return next();
+                return next();  
             }
         }
     }
