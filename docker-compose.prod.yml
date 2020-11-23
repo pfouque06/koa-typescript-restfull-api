@@ -9,12 +9,14 @@ services:
             - db_data
         volumes:
             - ./:/usr/src/app
-            - node_modules:/usr/src/app/node_modules
-            - dist:/usr/src/app/dist
+            - ./node_modules:/usr/src/app/node_modules
+            - ./dist:/usr/src/app/dist
         working_dir: /usr/src/app
         command: sh -c 'npm run prod'
         ports:
             - "8443:8443"
+        networks:
+            - koa_lan
         logging:
             driver: json-file
             options:
@@ -23,9 +25,11 @@ services:
     db_auth:
         image: redis
         volumes:
-            - koa_db_auth:/data
+            - auth:/data
         ports:
             - "26379:6379"
+        networks:
+            - koa_lan
         logging:
             driver: json-file
             options:
@@ -34,7 +38,7 @@ services:
     db_data:
         image: mysql:5
         volumes:
-            - koa_db_data:/var/lib/mysql
+            - data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: koatypescript
@@ -42,13 +46,18 @@ services:
             - --max_allowed_packet=64M
         ports:
             - "23306:3306"
+        networks:
+            - koa_lan
         logging:
             driver: json-file
             options:
                 max-size: "10m"
 
 volumes:
-    node_modules:
-    dist:
-    koa_db_auth:
-    koa_db_data:
+    # node_modules:
+    # dist:
+    auth:
+    data:
+
+networks:
+    koa_lan:
