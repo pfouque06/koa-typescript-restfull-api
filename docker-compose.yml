@@ -22,6 +22,8 @@ services:
 
     db_auth:
         image: redis
+        volumes:
+            - koa_db_auth:/data
         ports:
             - "26379:6379"
         logging:
@@ -32,7 +34,7 @@ services:
     db_data:
         image: mysql:5
         volumes:
-            - koa_data:/var/lib/mysql
+            - koa_db_data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: koatypescript
@@ -48,4 +50,5 @@ services:
 volumes:
     node_modules:
     dist:
-    koa_data:
+    koa_db_auth:
+    koa_db_data:
