@@ -13,7 +13,10 @@ services:
             - ./dist:/usr/src/app/dist
         working_dir: /usr/src/app
         command: sh -c 'npm run dev'
+        environment:
+            - VIRTUAL_HOST=localhost # Enviroment variable needed for nginx proxy
         ports:
+            - "80:8080"
             - "8443:8443"
         networks:
             - koa_lan
