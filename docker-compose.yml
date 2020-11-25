@@ -15,11 +15,13 @@ services:
         command: sh -c 'npm run dev'
         environment:
             - VIRTUAL_HOST=localhost # Enviroment variable needed for nginx proxy
+            # - LETSENCRYPT_HOST=localhost # Enviroment variables needed for Let's Encrypt companion
+            # - LETSENCRYPT_EMAIL=pfouque@gmail.com
         ports:
-            - "80:8080"
+            - "8080:80"
             - "8443:8443"
         networks:
-            - koa_lan
+            - nginx-proxy
         logging:
             driver: json-file
             options:
@@ -32,7 +34,7 @@ services:
         ports:
             - "26379:6379"
         networks:
-            - koa_lan
+            - nginx-proxy
         logging:
             driver: json-file
             options:
@@ -50,17 +52,17 @@ services:
         ports:
             - "23306:3306"
         networks:
-            - koa_lan
+            - nginx-proxy
         logging:
             driver: json-file
             options:
                 max-size: "10m"
 
 volumes:
-    # node_modules:
-    # dist:
     auth:
     data:
 
 networks:
-    koa_lan:
+    nginx-proxy:
+        external:
+            name: webproxy_nginx-proxy # Reference webproxy/nginx-proxy container network 
