@@ -15,11 +15,15 @@ services:
         command: sh -c 'npm run prod'
         environment:
             - VIRTUAL_HOST=api.koa.pfouque.fr # Enviroment variable needed for nginx proxy
+            - LETSENCRYPT_HOST=api.koa.pfouque.fr # Enviroment variables needed for Let's Encrypt companion
+            - LETSENCRYPT_EMAIL=pfouque@gmail.com
         ports:
-            - "80:8080"
+            - "80"
+            # - "443"
             - "8443:8443"
         networks:
-            - koa_lan
+            # - koa_lan
+            - nginx-proxy
         logging:
             driver: json-file
             options:
@@ -32,7 +36,8 @@ services:
         ports:
             - "26379:6379"
         networks:
-            - koa_lan
+            # - koa_lan
+            - nginx-proxy
         logging:
             driver: json-file
             options:
@@ -50,7 +55,8 @@ services:
         ports:
             - "23306:3306"
         networks:
-            - koa_lan
+            # - koa_lan
+            - nginx-proxy
         logging:
             driver: json-file
             options:
@@ -63,4 +69,8 @@ volumes:
     data:
 
 networks:
-    koa_lan:
+    # koa_lan:
+    nginx-proxy:
+        external:
+            name: webproxy_nginx-proxy # Reference our network that was created by Docker Compose when we launched our two main containers earlier. Name generated automaticaly. Use `docker network ls` to list all networks and their names.
+
