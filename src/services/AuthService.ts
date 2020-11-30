@@ -98,7 +98,7 @@ export class AuthService {
         // console.log('newPassword:', newPassword);
         
         // check password
-        if (!this.checkPassword(password, currentUser)) {
+        if ( ! await this.checkPassword(password, currentUser)) {
             throw Error("Error: wrong password")
         }
         try {
@@ -112,9 +112,9 @@ export class AuthService {
     
     async checkPassword(password: string, user: DeepPartial<User>): Promise<boolean> {
         const hashedPass = await hash(password, user.salt as string)
-        // console.log('hashedPass:', hashedPass);
-        // console.log('user.password:', user.password);
-        return (hashedPass !== user.password);
+        console.log('hashedPass:', hashedPass);
+        console.log('user.password:', user.password);
+        return (hashedPass === user.password);
     }
     
     test(currentUser: DeepPartial<User>): Promise<String> {
