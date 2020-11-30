@@ -147,6 +147,11 @@ note: command lines to build up this project :
 > $ npm install; npm run build  
 > $ sudo docker-compose -f docker-compose.prod.yml up  
 
+code level update :
+> $ git pull
+> $ sudo docker-compose rm backend
+> $ sudo docker-compose -f docker-compose.prod.yml up -d; sudo docker-compose logs -f
+
 ##### dev :
 > $ npm install  
 > $ sudo docker-compose up  
