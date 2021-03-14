@@ -4,6 +4,7 @@ services:
 
     backend:
         image: node:12
+        restart: always
         depends_on:
             - db_auth
             - db_data
@@ -29,6 +30,7 @@ services:
 
     db_auth:
         image: redis
+        restart: always
         volumes:
             - auth:/data
         ports:
@@ -42,6 +44,7 @@ services:
 
     db_data:
         image: mysql:5
+        restart: always
         volumes:
             - data:/var/lib/mysql
         environment:
