@@ -7,7 +7,7 @@ services:
         depends_on:
             - db_auth
             - db_data
-        restart: always
+        # restart: always ## only for prod
         volumes:
             - ./:/usr/src/app
             - ./node_modules:/usr/src/app/node_modules
