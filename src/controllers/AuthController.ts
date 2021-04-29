@@ -1,4 +1,4 @@
-import { Body, Get,  Post, JsonController,  Authorized, CurrentUser, Put } from "routing-controllers";
+import { Body, Get,  Post, JsonController,  Authorized, CurrentUser, Put, Param } from "routing-controllers";
 import { DeepPartial } from "typeorm";
 import { LoginForm } from "../entities/forms/LoginForm";
 import { User } from "../entities/models/User";
@@ -45,6 +45,12 @@ export class AuthController {
     myself(@CurrentUser() currentUser: DeepPartial<User>): Promise<User> {
         // console.log(`-> AuthController.test()`.bgCyan);
         return this.authService.myself(currentUser);
+    }
+    
+    @Get("/mailCheck/:mail")
+    mailCheck(@Param("mail") mail: string): Promise<boolean> {
+        // console.log(`-> AuthController.test()`.bgCyan);
+        return this.authService.mailCheck(mail);
     }
     
     @Put("/changePassword")

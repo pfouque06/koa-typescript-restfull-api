@@ -90,6 +90,11 @@ export class AuthService {
         return new Promise<User>(resolve => resolve(currentUser as User));;
     }
     
+    mailCheck(mail: string): Promise<boolean> {
+        return this.userService.isUnique(mail);
+        // return new Promise<boolean>(resolve => resolve(true));
+    }
+
     async changePassword(currentUser: DeepPartial<User>, passwordForm: PasswordForm): Promise<boolean> {
         console.log(`-> AuthService.changePassword(currentUser: ${currentUser.email})`.bgCyan);
         const { id } = currentUser
